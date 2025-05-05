@@ -12,9 +12,11 @@ public class BattleshipStage extends Stage {
 
     public BattleshipStage() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/miniproyecto_3/battleship.fxml"));
-        Scene scene = new Scene(loader.load(), 320, 240);
+        Scene scene = new Scene(loader.load(), 965,580 );
         setTitle("Battleship");
+        setResizable(false);
         setScene(scene);
         show();
+
     }
 }
