@@ -45,9 +45,9 @@ public class Board {
 
             positions.add(finalCell);
         }
-        for (Cell finalCell : positions) {
-            finalCell.setShip(ship);
-            ship.addLocation(finalCell);
+        for (Cell c : positions) {
+            c.setShip(ship);
+            ship.addLocation(c);
         }
         ships.add(ship);
         return true;
