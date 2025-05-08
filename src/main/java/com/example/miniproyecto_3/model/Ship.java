@@ -15,4 +15,31 @@ public class Ship {
         this.locations = new ArrayList<>();
         this.cellsTouched = new ArrayList<>();
     }
+
+    public String getType() {
+        return type;
+    }
+    public int getSize() {
+        return size;
+    }
+    public void addLocation(Cell location){
+        locations.add(location);
+    }
+    public List<Cell> getLocations() {
+        return locations;
+    }
+    public List<Cell> getCellsTouched() {
+        return cellsTouched;
+    }
+    public void setCellsTouched(Cell cellTouched) {
+        if(!cellsTouched.contains(cellTouched)){
+            cellsTouched.add(cellTouched);
+        }
+    }
+    public boolean containsCell(Cell cell){
+        return cellsTouched.contains(cell);
+    }
+    public boolean isSunkenShip(){
+        return cellsTouched.size() == size;
+    }
 }
