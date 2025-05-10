@@ -1,4 +1,4 @@
-package com.example.miniproyecto_3.model.planeserializablefiles;
+package com.example.miniproyecto_3.model.planeSerializableFiles;
 
 import java.io.*;
 
