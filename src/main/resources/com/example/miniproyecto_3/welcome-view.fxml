@@ -11,6 +11,6 @@
       <TextField fx:id="nickname" layoutX="258.0" layoutY="187.0" />
       <Label layoutX="301.0" layoutY="66.0" text="BATTLESHIP" />
       <Label layoutX="255.0" layoutY="153.0" text="ingrese el nombre de usuario" />
-      <Button layoutX="307.0" layoutY="343.0" mnemonicParsing="false" onAction="#handleClickPlay" text="continuar" />
+      <Button layoutX="307.0" layoutY="343.0" mnemonicParsing="false" onAction="#handleClickContinue" text="continuar" />
    </children>
 </AnchorPane>
