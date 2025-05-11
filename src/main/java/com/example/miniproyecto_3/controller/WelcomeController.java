@@ -2,6 +2,7 @@ package com.example.miniproyecto_3.controller;
 
 import com.example.miniproyecto_3.model.Player;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import com.example.miniproyecto_3.view.WelcomeStage;
@@ -46,4 +47,8 @@ public class WelcomeController {
         }
     }
 
+    //creando boton de cerrar porque el otro no se percibe bien
+    public void handleClose(javafx.event.ActionEvent actionEvent) {
+        Platform.exit();
+    }
 }
