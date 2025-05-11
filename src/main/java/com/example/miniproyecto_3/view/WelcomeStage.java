@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import com.example.miniproyecto_3.controller.WelcomeController;
 import javafx.stage.StageStyle;
@@ -29,11 +30,19 @@ public class WelcomeStage extends Stage {
             e.printStackTrace();
         }
         Scene scene = new Scene(root);
+        //Cargar el icono
+        try {
+            Image icon = new Image(getClass().getResourceAsStream("/images/favicon-16x16.png"));
+            getIcons().add(icon);
+        } catch (Exception e) {
+            System.err.println("Error al cargar el icono: " + e.getMessage());
+        }
+
         scene.getStylesheets().add((getClass().getResource("/css/welcomeViewStyle.css")).toExternalForm());
         setScene(scene);
-        setTitle("Sopa de letras");
+        setTitle("Battleship");
         setResizable(false);
-        initStyle(StageStyle.UNDECORATED);
+        //initStyle(StageStyle.UNDECORATED);  ¿Por qué esto?
         show();
     }
 

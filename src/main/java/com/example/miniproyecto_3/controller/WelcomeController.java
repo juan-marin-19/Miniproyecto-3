@@ -46,9 +46,4 @@ public class WelcomeController {
             System.out.println("El nombre de usuario está vacío.");
         }
     }
-
-    //creando boton de cerrar porque el otro no se percibe bien
-    public void handleClose(javafx.event.ActionEvent actionEvent) {
-        Platform.exit();
-    }
 }
