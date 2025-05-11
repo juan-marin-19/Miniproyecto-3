@@ -1,9 +1,10 @@
 package com.example.miniproyecto_3.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Board {
+public class Board implements Serializable {
     private final int rows = 10;
     private final int columns = 10;
     private List<List<Cell>> board;

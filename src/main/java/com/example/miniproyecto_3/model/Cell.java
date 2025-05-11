@@ -1,6 +1,8 @@
 package com.example.miniproyecto_3.model;
 
-public class Cell {
+import java.io.Serializable;
+
+public class Cell implements Serializable {
     private int row;
     private int column;
     private boolean shot  = false;
