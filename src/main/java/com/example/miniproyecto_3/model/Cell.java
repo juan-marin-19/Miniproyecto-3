@@ -2,39 +2,55 @@ package com.example.miniproyecto_3.model;
 
 import java.io.Serializable;
 
-public class Cell implements Serializable {
-    private int row;
-    private int column;
-    private boolean shot  = false;
-    private Ship ship = null;
+public class Cell {
+    private int row; //fila de la celda
+    private int col; // columna de la celda
+    private boolean shot;  // si la celda fue disparada
+    private Ship ship; // Barco asignado a esta celda (puede ser null)
 
-    public Cell(int row, int column) {
+
+    /**
+     *
+     * celda representa una posicion del tablero
+     * */
+    public Cell(int row, int col) {
         this.row = row;
-        this.column = column;
+        this.col = col;
+        this.shot = false;
+        this.ship = null;
     }
 
-    public int getRow() {
-        return row;
-    }
-    public int getColumn() {
-        return column;
-    }
-    public boolean isShot() {
-        return shot;
-    }
-    public void setShot(){
-        this.shot = true;
-    }
-    public Ship getShip() {
-        return ship;
-    }
     public void setShip(Ship ship) {
         this.ship = ship;
     }
-    public boolean isFull(){
-        if(ship != null){
-            return true;
-        }
-        return false;
+
+    public Ship getShip() {
+        return ship;
     }
+
+    /**
+     * indica si la celda tiene o no un barco
+     */
+    public boolean hasShip() {
+        return ship != null;
+    }
+
+    /**
+     * Marca esta celda como disparada.
+     */
+    public void markShot() {
+        this.shot = true;
+    }
+
+    /**
+     * Verifica si la celda fue disparada.
+     *
+     * @return true si fue disparada, false si no.
+     */
+    public boolean wasShot() {
+        return shot;
+    }
+
+    public int getRow() { return row; }
+    public int getCol() { return col; }
 }
