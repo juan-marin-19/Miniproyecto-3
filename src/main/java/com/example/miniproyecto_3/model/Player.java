@@ -29,6 +29,10 @@ import java.io.Serializable;
             this.sunkenShips = sunkenShips;
         }
 
+        public void incrementSunkenShips() {
+            this.sunkenShips++;
+        }
+
         @Override
         public String toString() {
             return "Player{" +
