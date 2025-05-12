@@ -4,43 +4,49 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ship implements Serializable {
-    private String type;
+public class Ship {
+
+
+
+    /**
+     *la clase barco tiene una lista de celdas asociadas las cuales a su vez guardan su posicion en el arreglo2d board
+     *
+     * tiene la orientacion 0 = horizontal, 1 = vertical
+     *
+     * y el tamaño del barco
+     * */
+    private int orientation;
     private int size;
-    private List<Cell> locations;
-    private List<Cell> cellsTouched;
 
-    public Ship(String type, int size){
-        this.type = type;
+    private List<Cell> cells; // donde está el barco
+
+    public Ship(int size, int orientation) {
         this.size = size;
-        this.locations = new ArrayList<>();
-        this.cellsTouched = new ArrayList<>();
+        this.orientation = orientation;
+        this.cells = new ArrayList<>();
     }
 
-    public String getType() {
-        return type;
+    public int getSize() { return size; }
+    public int getOrientation() { return orientation; }
+
+    // añade una celda a un barco
+    public void addCell(Cell cell) {
+        cells.add(cell);
     }
-    public int getSize() {
-        return size;
+
+    public List<Cell> getCells() {
+        return cells;
     }
-    public void addLocation(Cell location){
-        locations.add(location);
-    }
-    public List<Cell> getLocations() {
-        return locations;
-    }
-    public List<Cell> getCellsTouched() {
-        return cellsTouched;
-    }
-    public void setCellsTouched(Cell cellTouched) {
-        if(!cellsTouched.contains(cellTouched)){
-            cellsTouched.add(cellTouched);
+
+    /**
+     * Verifica si el barco está completamente hundido (todas sus celdas han sido disparadas).
+     */
+    public boolean isSunken() {
+            for (Cell cell : cells) {
+                if (!cell.wasShot()) {
+                    return false;
+                }
+            }
+            return true;
         }
-    }
-    public boolean containsCell(Cell cell){
-        return cellsTouched.contains(cell);
-    }
-    public boolean isSunkenShip(){
-        return cellsTouched.size() == size;
-    }
 }
