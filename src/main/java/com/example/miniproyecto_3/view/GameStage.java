@@ -1,5 +1,6 @@
 package com.example.miniproyecto_3.view;
 
+import com.example.miniproyecto_3.controller.PlacementeController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,9 +13,11 @@ import java.io.IOException;
 public class GameStage extends Stage{
     private GameController gameController;
     private Parent root;
+    private PlacementeController placementeController;
 
-    public GameStage() {
-        super();
+    public GameStage(){}
+
+    public void GameStage1() {
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/miniproyecto_3/game-view.fxml"));
         try{
@@ -31,9 +34,30 @@ public class GameStage extends Stage{
         show();
     }
 
+    public void GameStage2(){
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/example/miniproyecto_3/placement-view.fxml"));
+        try{
+            root = loader.load();
+            placementeController = loader.getController();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        Scene scene = new Scene(root);
+        setScene(scene);
+        setTitle("Sopa de letras");
+        setResizable(false);
+        initStyle(StageStyle.UNDECORATED);
+        show();
+    }
+
+
     public GameController getGameController() {
         return gameController;
     }
+
+    public PlacementeController getPlacementController(){return placementeController;}
 
     private static class GameStageHolder {
         private static GameStage INSTANCE;
@@ -48,4 +72,5 @@ public class GameStage extends Stage{
         GameStageHolder.INSTANCE.close();
         GameStageHolder.INSTANCE = null;
     }
+
 }
