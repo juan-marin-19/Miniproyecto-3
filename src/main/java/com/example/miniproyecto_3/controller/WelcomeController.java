@@ -20,9 +20,9 @@ public class WelcomeController {
     private TextField nickname;
 
     public void initialize() {
-    this.plainTextFileReader = new PlainTextFileReader();
+        this.plainTextFileReader = new PlainTextFileReader();
 
-     }
+    }
 
 
     @FXML
@@ -48,21 +48,20 @@ public class WelcomeController {
 
             if (controller != null) {
                 controller.startPlay(player);
-            }
-            else{
-                    System.err.println("Error: Placecontroller is null");
-                }
             } else {
-                System.out.println("El nombre de usuario está vacío.");
+                System.err.println("Error: Placecontroller is null");
             }
-     }
+        } else {
+            System.out.println("El nombre de usuario está vacío.");
+        }
+    }
 
 
     @FXML
     public void handleClickContinue(javafx.event.ActionEvent event) {
 
         String[] data = plainTextFileReader.readFromFile("player_data.csv");
-        if(data.length != 0){
+        if (data.length != 0) {
             String nickname = data[0];
             int sunkenBoats = Integer.parseInt(data[1]);
             Player player = new Player(nickname, sunkenBoats);
@@ -84,10 +83,11 @@ public class WelcomeController {
             } else {
                 System.err.println("Error: GameController is null");
             }
-        }
-        else{
+        } else {
             System.out.println("no hay partida!!");
         }
 
 
     }
+
+}
