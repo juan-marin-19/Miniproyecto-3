@@ -168,24 +168,29 @@ public class Figures {
         return new Group(submarine,elipse,elipse2);
     }
 
-    public static void prepareFigures(Group figure, Pane contenedor, double baseWidth, double baseHeight, int isHorizontal){
-            Scale escala = new Scale();
-            escala.xProperty().bind(Bindings.createDoubleBinding(
-                    () -> contenedor.getWidth() / baseWidth,
-                    contenedor.widthProperty()
-            ));
-            escala.yProperty().bind(Bindings.createDoubleBinding(
-                    () -> contenedor.getHeight() / baseHeight,
-                    contenedor.heightProperty()
-            ));
-            figure.getTransforms().add(escala);
+    public static void prepareFigures(Group figure, Pane contenedor, double baseWidth, double baseHeight, int isHorizontal) {
+        // Escala
+        double finalBaseWidth = (isHorizontal == 0) ? baseHeight : baseWidth;
+        double finalBaseHeight = (isHorizontal == 0) ? baseWidth : baseHeight;
 
-            if (isHorizontal == 0) {
-                Bounds bounds = figure.getBoundsInLocal();
-                double centerX = bounds.getMinX() + bounds.getWidth() / 2;
-                double centerY = bounds.getMinY() + bounds.getHeight() / 2;
-                figure.getTransforms().add(new Rotate(90, centerX, centerY));
-            }
+        Scale escala = new Scale();
+        escala.xProperty().bind(Bindings.createDoubleBinding(
+                () -> contenedor.getWidth() / finalBaseWidth,
+                contenedor.widthProperty()
+        ));
+        escala.yProperty().bind(Bindings.createDoubleBinding(
+                () -> contenedor.getHeight() / finalBaseHeight,
+                contenedor.heightProperty()
+        ));
+        figure.getTransforms().add(escala);
+
+        // Rotación (después de escalar)
+        if (isHorizontal == 0) {
+            Bounds bounds = figure.getBoundsInParent(); // importante: usar getBoundsInParent tras escalar
+            double centerX = bounds.getMinX() + bounds.getWidth() / 2;
+            double centerY = bounds.getMinY() + bounds.getHeight() / 2;
+            figure.getTransforms().add(new Rotate(90, centerX, centerY));
+        }
     }
 
 }
