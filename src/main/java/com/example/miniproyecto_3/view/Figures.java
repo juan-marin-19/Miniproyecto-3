@@ -1,9 +1,11 @@
 package com.example.miniproyecto_3.view;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 
 public class Figures {
@@ -19,9 +21,9 @@ public class Figures {
         return new Group(equis);
     }
 
-    public static Group Portaaviones(Color colorRelleno, Color colorBorde){
-        Path portaaviones = new Path();
-        portaaviones.getElements().addAll(
+    public static Group Carrier(Color colorRelleno, Color colorBorde){
+        Path carrier = new Path();
+        carrier.getElements().addAll(
                 new MoveTo(20,10),
                 new LineTo(30,10),
                 new LineTo(35,40),
@@ -42,9 +44,9 @@ public class Figures {
                 new LineTo(15,40),
                 new ClosePath()
         );
-        portaaviones.setFill(colorRelleno);
-        portaaviones.setStroke(colorBorde);
-        portaaviones.setStrokeWidth(1);
+        carrier.setFill(colorRelleno);
+        carrier.setStroke(colorBorde);
+        carrier.setStrokeWidth(1);
         Path pista = new Path(
                 new MoveTo(35, 40),
                 new LineTo(15,191),
@@ -67,11 +69,11 @@ public class Figures {
         plane6.setFill(Color.BLACK);
         Rectangle rect = new Rectangle(8,125,10,25);
         rect.setFill(Color.BLACK);
-        return new Group(portaaviones, pista, plane1,plane2, plane3, plane4,plane5,rect,plane6);
+        return new Group(carrier, pista, plane1,plane2, plane3, plane4,plane5,rect,plane6);
     }
-    public static Group Destructor(Color colorRelleno, Color colorBorde){
-        Path destructor = new Path();
-        destructor.getElements().addAll(
+    public static Group Destroyer(Color colorRelleno, Color colorBorde){
+        Path destroyer = new Path();
+        destroyer.getElements().addAll(
                 new MoveTo(25,10),
                 new LineTo(40,30),
                 new LineTo(40,80),
@@ -93,21 +95,21 @@ public class Figures {
                 new LineTo(13,30),
                 new ClosePath()
         );
-        destructor.setFill(colorRelleno);
-        destructor.setStroke(colorBorde);
-        destructor.setStrokeWidth(1);
+        destroyer.setFill(colorRelleno);
+        destroyer.setStroke(colorBorde);
+        destroyer.setStrokeWidth(1);
         Rectangle rect = new Rectangle(18,50,14,20);
         rect.setFill(Color.BLACK);
         Rectangle rect2 = new Rectangle(20,52,10,15);
         rect2.setFill(Color.DARKGRAY);
         Circle circle = new Circle(25,30,5);
         circle.setFill(Color.BLACK);
-        return new Group(destructor,rect,rect2,circle);
+        return new Group(destroyer,rect,rect2,circle);
     }
 
-    public static Group Fragata(Color colorRelleno, Color colorBorde) {
-        Path fragata = new Path();
-        fragata.getElements().addAll(
+    public static Group Frigate(Color colorRelleno, Color colorBorde) {
+        Path frigate = new Path();
+        frigate.getElements().addAll(
                 new MoveTo(25,5),
                 new LineTo(40,20),
                 new LineTo(40,40),
@@ -125,14 +127,14 @@ public class Figures {
                 new HLineTo(15),
                 new ClosePath()
         );
-        fragata.setFill(colorRelleno);
-        fragata.setStroke(colorBorde);
-        fragata.setStrokeWidth(1);
+        frigate.setFill(colorRelleno);
+        frigate.setStroke(colorBorde);
+        frigate.setStrokeWidth(1);
         Circle circle = new Circle(25,15,4);
         circle.setFill(Color.BLACK);
         Rectangle rect = new Rectangle(17,27,16,6);
         rect.setFill(Color.BLACK);
-        return new Group(fragata,circle,rect);
+        return new Group(frigate,circle,rect);
     }
 
     public static Group Submarine(Color colorRelleno, Color colorBorde) {
@@ -166,7 +168,7 @@ public class Figures {
         return new Group(submarine,elipse,elipse2);
     }
 
-    public static void scaleFigures(Group figura, Pane contenedor, double baseWidth, double baseHeight){
+    public static void prepareFigures(Group figure, Pane contenedor, double baseWidth, double baseHeight, int isHorizontal){
             Scale escala = new Scale();
             escala.xProperty().bind(Bindings.createDoubleBinding(
                     () -> contenedor.getWidth() / baseWidth,
@@ -176,7 +178,14 @@ public class Figures {
                     () -> contenedor.getHeight() / baseHeight,
                     contenedor.heightProperty()
             ));
-            figura.getTransforms().add(escala);
+            figure.getTransforms().add(escala);
 
+            if (isHorizontal == 0) {
+                Bounds bounds = figure.getBoundsInLocal();
+                double centerX = bounds.getMinX() + bounds.getWidth() / 2;
+                double centerY = bounds.getMinY() + bounds.getHeight() / 2;
+                figure.getTransforms().add(new Rotate(90, centerX, centerY));
+            }
     }
+
 }
