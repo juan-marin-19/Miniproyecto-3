@@ -1,6 +1,7 @@
 package com.example.miniproyecto_3.controller;
 
 import com.example.miniproyecto_3.model.Board;
+import com.example.miniproyecto_3.model.Cell;
 import com.example.miniproyecto_3.model.Player;
 import com.example.miniproyecto_3.model.Ship;
 import com.example.miniproyecto_3.view.Figures;
@@ -10,9 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -45,6 +44,7 @@ public class PlacementeController {
         System.out.println(player.getSunkenShips());
         System.out.println(player.getNickname());
         this.playerBoard = new Board();
+        drawGrid();
 
     }
     @FXML
@@ -74,7 +74,7 @@ public class PlacementeController {
     public void selectShip(String type, int size){
         selectedShipSize = size;
         selectedShipType = type;
-        System.out.printf("Barco seleccionado" + type + "Tamaño:" + size);
+        System.out.printf("Barco seleccionado" + type + "Tamaño:" + size +"\n");
     }
 
     public void drawGrid() {
@@ -84,20 +84,32 @@ public class PlacementeController {
                 Rectangle rect = new Rectangle(40,40);
                 rect.setFill(Color.LIGHTBLUE);
                 rect.setStroke(Color.BLACK);
+                StackPane cell = new StackPane(rect);
+                rect.widthProperty().bind(cell.widthProperty());
+                rect.heightProperty().bind(cell.heightProperty());
+                GridPane.setHgrow(cell, Priority.ALWAYS);
+                GridPane.setVgrow(cell, Priority.ALWAYS);
                 final int r = row;
                 final int c = col;
-                rect.setOnMouseClicked(e -> {if(e.getButton() == MouseButton.PRIMARY) {
+                cell.setOnMouseClicked(e -> {if(e.getButton() == MouseButton.PRIMARY) {
                     placeShipAt(r,c);
+                    System.out.println("Se selecciono la celda");
                 }
                 });
-                GridPaneTable.add(rect,col,row);
+                GridPaneTable.add(cell,col,row);
             }
         }
+        System.out.println("Se dibujo exitosamente el tablero");
     }
 
     public void placeShipAt(int row, int col){
         if(selectedShipType == null){
             System.out.println("Seleccione un barco");
+            return;
+        }
+        Cell a = playerBoard.getCell(row,col);
+        if(a.hasShip()){
+            System.out.println("La celda ya tiene un barco");
             return;
         }
         Ship ship = new Ship(selectedShipSize, selectedOrientation);
@@ -110,6 +122,7 @@ public class PlacementeController {
                 case "frigate" -> Figures.Frigate(Color.DARKGRAY, Color.BLACK);
                 default -> null;
             };
+            System.out.println("Se creo la figura");
 
             if(figure != null){
                 double baseHeight = switch(selectedShipType){
@@ -139,6 +152,8 @@ public class PlacementeController {
 
                 selectedShipType = null;
 
+                System.out.println("Se posicionó la fugira con exito");
+
             } else{
                 System.out.println("No se pudo colocar el barco en esa posición");
             }
@@ -149,6 +164,7 @@ public class PlacementeController {
     public void handleRotate(){
         selectedOrientation = (selectedOrientation == 0) ? 1:0;
         //aqui se cambia tmabien el texto en el label para especificar la orientación
+        System.out.println("Se cambio la orientacion");
     }
     public void handleReadyToPlay(){
         GameStage.deleteInstance();

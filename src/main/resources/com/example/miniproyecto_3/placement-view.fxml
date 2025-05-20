@@ -87,7 +87,7 @@
                   </Pane>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="changeOrientationButton" alignment="CENTER" mnemonicParsing="false" text="cambiar orientación ">
+                        <Button fx:id="changeOrientationButton" alignment="CENTER" mnemonicParsing="false" onAction="#handleRotate" text="cambiar orientación ">
                            <HBox.margin>
                               <Insets right="10.0" top="5.0" />
                            </HBox.margin>
