@@ -1,6 +1,6 @@
 package com.example.miniproyecto_3.view;
 
-import com.example.miniproyecto_3.controller.PlacementeController;
+import com.example.miniproyecto_3.controller.PlacementController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,7 +13,7 @@ import java.io.IOException;
 public class GameStage extends Stage{
     private GameController gameController;
     private Parent root;
-    private PlacementeController placementeController;
+    private PlacementController placementeController;
 
     public GameStage(){}
 
@@ -57,7 +57,7 @@ public class GameStage extends Stage{
         return gameController;
     }
 
-    public PlacementeController getPlacementController(){return placementeController;}
+    public PlacementController getPlacementController(){return placementeController;}
 
     private static class GameStageHolder {
         private static GameStage INSTANCE;

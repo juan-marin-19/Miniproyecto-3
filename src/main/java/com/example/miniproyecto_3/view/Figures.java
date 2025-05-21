@@ -21,7 +21,7 @@ public class Figures {
         return new Group(equis);
     }
 
-    public static Group Carrier(Color colorRelleno, Color colorBorde){
+    public static Group Portaaviones(Color colorRelleno, Color colorBorde){
         Path carrier = new Path();
         carrier.getElements().addAll(
                 new MoveTo(20,10),
@@ -71,7 +71,7 @@ public class Figures {
         rect.setFill(Color.BLACK);
         return new Group(carrier, pista, plane1,plane2, plane3, plane4,plane5,rect,plane6);
     }
-    public static Group Destroyer(Color colorRelleno, Color colorBorde){
+    public static Group Destructor(Color colorRelleno, Color colorBorde){
         Path destroyer = new Path();
         destroyer.getElements().addAll(
                 new MoveTo(25,10),
@@ -107,7 +107,7 @@ public class Figures {
         return new Group(destroyer,rect,rect2,circle);
     }
 
-    public static Group Frigate(Color colorRelleno, Color colorBorde) {
+    public static Group Fragata(Color colorRelleno, Color colorBorde) {
         Path frigate = new Path();
         frigate.getElements().addAll(
                 new MoveTo(25,5),

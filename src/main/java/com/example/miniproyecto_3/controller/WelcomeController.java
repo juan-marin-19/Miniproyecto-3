@@ -2,14 +2,10 @@ package com.example.miniproyecto_3.controller;
 
 import com.example.miniproyecto_3.model.Player;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import com.example.miniproyecto_3.view.WelcomeStage;
 import com.example.miniproyecto_3.view.GameStage;
-
-
-import java.awt.event.ActionEvent;
 
 public class WelcomeController {
 
@@ -41,7 +37,7 @@ public class WelcomeController {
 
             //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL
 
-            PlacementeController controller = gameStage.getPlacementController();
+            PlacementController controller = gameStage.getPlacementController();
             // Asegúrate de que el controlador no sea null antes de llamar startPlay
 
             //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL

@@ -16,4 +16,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         WelcomeStage.getInstance();
     }
+
+
 }
