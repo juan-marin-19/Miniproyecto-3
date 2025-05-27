@@ -57,6 +57,7 @@ public class GameController {
                 // button.setPrefWidth(10);   // Ancho preferido
               //  button.setPrefHeight(5);
 
+                // row y columna que empiezan desde 0 para el controlador
                 int row = i-1;
                 int col = j-1;
 
@@ -68,6 +69,7 @@ public class GameController {
                     if (cell.hasShip()) {
                         button.setStyle("-fx-background-color: red;");
                     } else {
+                        System.out.println("no ship");
                         button.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: red;");
                     }
                 });
