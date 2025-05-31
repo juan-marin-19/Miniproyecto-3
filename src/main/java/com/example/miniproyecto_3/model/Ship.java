@@ -41,12 +41,9 @@ public class Ship {
     /**
      * Verifica si el barco está completamente hundido (todas sus celdas han sido disparadas).
      */
-    public boolean isSunken() {
-            for (Cell cell : cells) {
-                if (!cell.wasShot()) {
-                    return false;
-                }
-            }
-            return true;
-        }
+
+
+    public void registerHit(){
+
+    }
 }

@@ -32,8 +32,8 @@ public class GameController {
     }
 
     public void initialize() {
-        this.playerBoard = new Board();
-        this.machineBoard = new Board();
+        this.playerBoard = new Board(10,10);
+        this.machineBoard = new Board(10,10);
         drawPlayerGrid();
     }
 
@@ -63,16 +63,7 @@ public class GameController {
 
                 playerGrid.add(button, i, j);
 
-                button.setOnAction(e -> {
-                    Cell cell = playerBoard.getCell(row, col);
-                    cell.markShot();
-                    if (cell.hasShip()) {
-                        button.setStyle("-fx-background-color: red;");
-                    } else {
-                        System.out.println("no ship");
-                        button.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: red;");
-                    }
-                });
+               //boton para manejar los disparo
 
             }
         }
