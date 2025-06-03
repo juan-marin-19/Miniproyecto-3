@@ -62,6 +62,11 @@ public class PlacementController {
     public void initialize() {
         this.playerBoard = new Board(10, 10);
 
+        //FIJA LA PANTALLA PARA QUE NO SE VAYA HACIA ABAJO
+        rootPane.setMinHeight(400);
+        rootPane.setMaxHeight(400);
+        rootPane.setPrefHeight(400);
+
 
         //CÓDIGO PARA MANEJAR EL CAMBIO DE ORIENTACIÓN CON LA LETRA G
         borderPane.setOnKeyPressed(event -> {
