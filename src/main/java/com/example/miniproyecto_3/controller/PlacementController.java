@@ -1,6 +1,9 @@
 package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.*;
+import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import com.example.miniproyecto_3.view.Figures;
+import com.example.miniproyecto_3.view.GameStage;
+import com.example.miniproyecto_3.view.WelcomeStage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -12,7 +15,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +29,12 @@ public class PlacementController {
     private Player player;
     private boolean dragging = false;
     private boolean rotated = false; // rotated; vertical = false ; horizontal = true
+    private boolean resetFinalCoords = false;
     private Board playerBoard;
-    public int currentShipId;
-    private Group currentShipVisual = null;
-    private List<int[]> shipFinalCoords;
-
+    private Group currentShipVisual = null;  // referencia de versionShip, para manejar el cambio de orientación
+    private List<int[]> shipFinalCoords = new ArrayList<>(); // lista para guardar las coordenadas correctas de un ship
+    private int numShipsPlaced = 0;
+    private PlainTextFileReader plainTextFileReader;
 
 
     @FXML
@@ -43,6 +51,7 @@ public class PlacementController {
 
 
     public PlacementController() {
+        this.plainTextFileReader = new PlainTextFileReader();
 
     }
 
@@ -90,240 +99,27 @@ public class PlacementController {
         Group submarine1 = Figures.Submarine(Color.LIGHTBLUE, Color.BLACK);
         Group submarine2 = Figures.Submarine(Color.LIGHTBLUE, Color.BLACK);
         Group portaaviones = Figures.Portaaviones(Color.LIGHTBLUE, Color.BLACK);
-
+        //Rectangle rect = new Rectangle(0, 0, 42, 183);
+       // Group rectGroup = new Group(rect);
 
         // Dibujar el grid añadiendo stackPanes en cada celda del playerGrid
         drawBoard();
 
-
         //cargo las figuras y el código de su movimiento, (version = size)
 
-        loadShipPalette(fragata1, 1, 0);
-        loadShipPalette(fragata2, 1, 1);
-        loadShipPalette(fragata3, 1, 2);
-        loadShipPalette(fragata4, 1, 3);
-        loadShipPalette(destructor1, 2, 4);
-        loadShipPalette(destructor2, 2, 5);
-        loadShipPalette(destructor3, 2, 6);
-        loadShipPalette(submarine1, 3, 7);
-        loadShipPalette(submarine2, 3, 8);
-        loadShipPalette(portaaviones, 4, 9);
+        loadShipPalette(fragata1, 1);
+        loadShipPalette(fragata2, 1);
+        loadShipPalette(fragata3, 1);
+        loadShipPalette(fragata4, 1);
+        loadShipPalette(destructor1, 2);
+        loadShipPalette(destructor2, 2);
+        loadShipPalette(destructor3, 2);
+        loadShipPalette(submarine1, 3);
+        loadShipPalette(submarine2, 3 );
+        loadShipPalette(portaaviones, 4);
 
-
-        Platform.runLater(() -> {
-            for (Node node : playerGrid.getChildren()) {
-                if (node instanceof StackPane) {
-                    Bounds bounds = node.getBoundsInParent();
-                    System.out.println("StackPane width: " + bounds.getWidth());
-                    System.out.println("StackPane height: " + bounds.getHeight());
-                    break;
-                }
-            }
-        });
 
     }
-
-
-    /**
-    * MOVIMIENTO Y COLOCACIÓN DEL BARCO  ,  (me falta que el mouse este en el centro , no aparezca)
-     *
-     * METODO FUNCIONAL!!!!!!
-    */
-    /*
-    private void loadShipPalette(Group shipVersion,int version, int currentShipId) {
-
-            shipVersion.setUserData(new Ship(version, currentOrientation));
-
-            //empieza el arrastre cuando se toca la figura
-            shipVersion.setOnMousePressed(e -> {
-
-                this.currentShipId = currentShipId;
-
-                if (currentShip != null && floatingShip != null) {
-                    // Ya hay un barco activo: cancelar selección
-                    rootPane.getChildren().remove(floatingShip);
-                    rootPane.setOnMouseMoved(null);
-                    floatingShip = null;
-                    currentShip = null;
-                    System.out.println("Selección cancelada");
-                    //rootPane.setCursor(Cursor.DEFAULT);
-                    return;
-
-                }
-
-                //desaparece cursor cuando undo
-                //rootPane.setCursor(Cursor.NONE);
-
-                // creo un ship aux para ser usado luego
-                currentShip = new Ship(version, currentOrientation);
-
-                if (version == 1) {
-                    floatingShip = Figures.Fragata(Color.LIGHTBLUE, Color.BLACK); // nuevo clon visual
-                } else if (version == 2) {
-                    floatingShip = Figures.Destructor(Color.LIGHTBLUE, Color.BLACK); // nuevo clon visual
-                }else if (version == 3){
-                    floatingShip = Figures.Submarine(Color.LIGHTBLUE, Color.BLACK); // nuevo clon visual
-                }
-                else{
-                    floatingShip = Figures.Portaaviones(Color.LIGHTBLUE, Color.BLACK); // nuevo clon visual
-                }
-
-                //añade el barco al anchorPane
-                 rootPane.getChildren().add(floatingShip);
-
-
-                //lo coloco para que siga el mouse
-               floatingShip.setLayoutX(e.getSceneX() - 20);
-               floatingShip.setLayoutY(e.getSceneY() - 40);
-                //floatingShip.setLayoutX(e.getSceneX() - bounds.getWidth() / 2 - bounds.getMinX());
-                //floatingShip.setLayoutY(e.getSceneY() - bounds.getHeight() / 2 - 3*bounds.getMinY());
-
-                floatingShip.setMouseTransparent(true); // no intercepta eventos
-
-
-                //código para que la figura siga el mouse
-                rootPane.setOnMouseMoved(ev -> {
-
-                    // la posición se ajusta al mouse
-                    floatingShip.setLayoutX(ev.getSceneX() - 20);
-                    floatingShip.setLayoutY(ev.getSceneY() - 40);
-
-
-
-
-                     // CÓDIGO PARA LA AYUDA VISUAL AL JUGADOR
-                    boolean isVertical = false; // o falso, según el estado actual
-
-                    for (int i = 1; i < 101; i++) {
-                        Node node = playerGrid.getChildren().get(i);
-
-                        if (node instanceof StackPane stackPane) {
-                            int index = i;
-
-                            node.setOnMouseEntered(mouseEvent -> {
-                                int row = index / 10;
-                                int col = index % 10;
-
-                                List<int[]> coords = playerBoard.getShipCoordinates(row, col, version, isVertical);
-
-                                for (int[] coord : coords) {
-                                    int r = coord[0];
-                                    int c = coord[1];
-                                    int targetIndex = r * 10 + c;
-                                    if (targetIndex < playerGrid.getChildren().size()) {
-                                        Node targetNode = playerGrid.getChildren().get(targetIndex);
-                                        if (targetNode instanceof StackPane targetPane) {
-                                            targetPane.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
-                                        }
-                                    }
-                                }
-                            });
-
-                            node.setOnMouseExited(mouseEvent -> {
-                                int row = index / 10;
-                                int col = index % 10;
-
-                                List<int[]> coords = playerBoard.getShipCoordinates(row, col, version, isVertical);
-
-                                for (int[] coord : coords) {
-                                    int r = coord[0];
-                                    int c = coord[1];
-                                    int targetIndex = r * 10 + c;
-                                    if (targetIndex < playerGrid.getChildren().size()) {
-                                        Node targetNode = playerGrid.getChildren().get(targetIndex);
-                                        if (targetNode instanceof StackPane targetPane) {
-                                            targetPane.setStyle("-fx-border-color: black; -fx-background-color: white;");
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }
-
-
-
-
-                });
-
-
-
-            });
-
-            //lo añado al vbox donde van los barcos
-            shipPalette.getChildren().add(shipVersion);
-
-
-            }
-
-     */
-
-
-    /**
-     *Dibujo el tablero, agrego regiones, manejo el ckick, dibujo el barco en el tablero
-     *
-     * METODO FUNCIONAL!!
-     */
-    /*
-        private void drawBoard() {
-            for (int i = 1; i < 11; i++) {
-                for (int j = 1; j < 11; j++) {
-
-
-                    // agrega un stackpane para poder superponer los barcos
-                    StackPane cell = new StackPane();
-                    cell.setPrefSize(40, 40);
-                    cell.setStyle("-fx-border-color: black; -fx-background-color: white;");
-
-
-                    // Agrega una zona invisible para clics
-                    Region clickArea = new Region();
-                    clickArea.setPrefSize(40, 40);
-                    clickArea.setStyle("-fx-background-color: transparent;");
-
-                    int finalRow = j-1;
-                    int finalCol = i-1;
-
-
-                    //manejo la logica del modelo para ajustar donde colocar el barco y el controlador para hacerlo visualmente
-                    clickArea.setOnMouseClicked(e -> {
-
-                        if (currentShip != null && floatingShip != null) {
-                            // 1. Eliminar barco flotante visual
-                            rootPane.getChildren().remove(floatingShip);
-                            rootPane.setOnMouseMoved(null);
-                            //restaruo el mouse
-                            //rootPane.setCursor(Cursor.DEFAULT);
-
-                            //IMPORTANTE!!!!!!!!!!!!
-                            // 2. Colocar visualmente el barco en la celda usando drawship y metodos del modelo!!!!!
-
-
-
-
-                            // 3. Limpia estado actual y elimina del vbox el barco con la referencia del barco en la lista
-                            currentShip = null;
-                            floatingShip = null;
-                            shipPalette.getChildren().remove(shipGraphics.get(currentShipId));
-
-
-
-                            System.out.println("Barco colocado en " + finalRow + "," + finalCol);
-
-                        } else {
-                            System.out.println("No hay barco seleccionado, seleccione un barco ");
-                        }
-
-                    });
-
-                    //añado la region al stackpane para que se pueda superponer la figura
-                    cell.getChildren().add(clickArea);
-                    playerGrid.add(cell, i, j);
-                }
-
-            }
-
-        }
-     */
 
 
 
@@ -331,16 +127,19 @@ public class PlacementController {
     /**
      * NUEVO METODO
      */
-    private void loadShipPalette(Group shipVersion,int version, int currentShipId){
+    private void loadShipPalette(Group shipVersion,int version){
 
-        //escalamos y colocamos en la paleta de barcos
+        //escalamos y colocamos el barco en la paleta de barcos
         shipVersion.setScaleX(0.78);
         shipVersion.setScaleY(0.78);
+
         shipPalette.getChildren().add(shipVersion);
 
+
         // Guardamos la posición original para poder "volver" si es necesario
-        final double[] originalLayout = new double[2];
+
         final List<StackPane> previouslyHighlighted = new ArrayList<>();
+
 
         //PRESIONO UN SHIP
         shipVersion.setOnMousePressed(event -> {
@@ -349,9 +148,6 @@ public class PlacementController {
             dragging = true;
             currentShipVisual = shipVersion;
 
-            // Guardar posición original
-            originalLayout[0] = shipVersion.getLayoutX();
-            originalLayout[1] = shipVersion.getLayoutY();
 
             // Mover el barco al root del flowPane al anchorPane para que se vea encima de todo
 
@@ -365,9 +161,9 @@ public class PlacementController {
             shipVersion.setLayoutY(shipBounds.getMinY());
         });
 
+
         //MOVIMIENTO SOSTENIDO (AQUÍ SE COLOCA EL BARCO)
         shipVersion.setOnMouseDragged(event -> {
-
 
             shipVersion.toFront();         // lo pone encima de los demás
 
@@ -377,7 +173,7 @@ public class PlacementController {
             // Obtener el centro del barco en coordenadas de escena
             Bounds shipBounds = shipVersion.localToScene(shipVersion.getBoundsInLocal());
 
-            //Guardamos la orientación
+            //Encontramos la orientación actual del barco
             boolean isVertical = !(Math.abs(shipVersion.getRotate() % 180) == 90);
 
 
@@ -428,7 +224,6 @@ public class PlacementController {
             double referencePointX;
             double referencePointY;
 
-
             //calculo la posición de referencia para calcular los cuadros que ocupa el barco
             if (isVertical) {
                 if (version == 1) {
@@ -468,6 +263,7 @@ public class PlacementController {
                 if (node instanceof StackPane) {
                     Bounds cellBounds = node.localToScene(node.getBoundsInLocal());
 
+                    //obtengo la col y row de la celda que contiene el punto de referencia
                     if (cellBounds.contains(referencePointX, referencePointY)) {
                         Integer col = GridPane.getColumnIndex(node);
                         Integer row = GridPane.getRowIndex(node);
@@ -476,11 +272,12 @@ public class PlacementController {
                         if (col == null) col = 0;
                         if (row == null) row = 0;
 
-
                         // Obtener coordenadas desde el modelo de los cuadros que ocupan el barco (se guardan en un array 2d de int)
                         List<int[]> shipCoords = playerBoard.getCoordinatesForShip(row, col, version, isVertical);
                         //guardarlo para usarlo luego si no está vacío es decir, si encuentra lugar
                         shipFinalCoords = shipCoords;
+                        //veo si tengo que resetear las coordenadas por si no encuentra las encuentra por estar fuera de rango o ya haber un barco
+                        resetFinalCoords = shipCoords.isEmpty();
                         // Verificar si hay espacio suficiente y encontrar las casillas posición para pintar
                         if (!shipCoords.isEmpty()) {
                             for (int[] coord : shipCoords) {
@@ -500,6 +297,8 @@ public class PlacementController {
                             }
                         }
                         break; // Ya encontramos la celda central
+                    }else{
+                        resetFinalCoords = true;
                     }
                 }
             }
@@ -511,26 +310,72 @@ public class PlacementController {
         //SUELTO UN SHIP
         shipVersion.setOnMouseReleased(event -> {
 
-
+            if(resetFinalCoords){
+                shipFinalCoords = new ArrayList<>();
+            }
             // Por ahora, siempre vuelve a la paleta
+
+
+            if(!shipFinalCoords.isEmpty()) {
+                // El arreglo no tiene nada entonces hay que colocar el barco donde nos indica las coordenadas
+                //  rootPane.getChildren().remove(shipVersion);
+                //añado el barco a el arreglo de cell en el modelo board.
+                playerBoard.placeShip(shipFinalCoords,rotated);
+
+                //add the ship to the grid visually
+                System.out.println(shipFinalCoords.get(0)[0] + " " + shipFinalCoords.get(0)[1]);
+
+                Node referenceCell = getCellPane(playerGrid,shipFinalCoords.get(0)[0] , shipFinalCoords.get(0)[1]);
+                Bounds cellBounds = referenceCell.localToScene(referenceCell.getBoundsInLocal());
+                double pivotX = cellBounds.getWidth() / 2;
+                double pivotY = cellBounds.getHeight() / 2;
+
+                if(!rotated){
+                    shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
+                    shipVersion.setLayoutY(cellBounds.getMinY()-39);
+                }else{
+                    shipVersion.getTransforms().add(new Rotate(270, pivotX, pivotY));
+                    shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
+
+                    if(version==3) {
+                        shipVersion.setLayoutY(cellBounds.getMinY()-35);
+                    }else if(version == 1) {
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 25);
+                    }
+                    else if(version==2) {
+                        shipVersion.setLayoutY(cellBounds.getMinY()-30);
+                    }else{
+                        shipVersion.setLayoutY(cellBounds.getMinY()-40);
+                    }
+
+                }
+
+                shipVersion.setDisable(true);
+                numShipsPlaced++;
+            }
+            else{
+                //resets because it couldn't be placed
+                rootPane.getChildren().remove(shipVersion);
+                shipPalette.getChildren().remove(shipVersion); // por si quedó por ahí
+                shipPalette.getChildren().add(shipVersion);
+            }
+
+
+
+
+
+            // RESET
+            resetFinalCoords = false;
+
+            shipFinalCoords = new ArrayList<>();
+
             rootPane.setCursor(Cursor.DEFAULT);
-
-
-            rootPane.getChildren().remove(shipVersion);
-
-
-            shipPalette.getChildren().remove(shipVersion); // por si quedó por ahí
-            shipPalette.getChildren().add(shipVersion);
-
-
-
 
             for(Node node: playerGrid.getChildren()){
                 if(node instanceof StackPane){
                     node.setStyle("-fx-border-color: black; -fx-background-color: white;");
                 }
             }
-
 
 
             //devolver barco orientación vertical
@@ -545,7 +390,6 @@ public class PlacementController {
 
 
         });
-
 
 
     }
@@ -574,19 +418,47 @@ public class PlacementController {
 
 
 
-    public StackPane getCellPane(GridPane grid, int row, int col) {
-        for (Node node : grid.getChildren()) {
-            if (GridPane.getRowIndex(node) != null && GridPane.getColumnIndex(node) != null) {
-                int nodeRow = GridPane.getRowIndex(node);
-                int nodeCol = GridPane.getColumnIndex(node);
-                if (nodeRow == row && nodeCol == col && node instanceof StackPane pane) {
-                    return pane;
-                }
+    public Node getCellPane(GridPane gridPane, int row, int col) {
+        for (Node node : gridPane.getChildren()) {
+            Integer rowIndex = GridPane.getRowIndex(node);
+            Integer colIndex = GridPane.getColumnIndex(node);
+
+            // default to 0 if null
+            int r = (rowIndex == null) ? 0 : rowIndex;
+            int c = (colIndex == null) ? 0 : colIndex;
+
+            if (r == row && c == col) {
+                return node;
             }
         }
-        return null; // No encontrada
+        return null; // not found
+
     }
 
+
+
+    @FXML
+    public void handleClickContinue(javafx.event.ActionEvent event){
+        if(numShipsPlaced==10){
+            // Aquí ya se colocaron los barcos
+            Board boardListo = playerBoard; // o como tengas el board final
+            Player player = this.player; // el jugador
+
+            GameStage gameStage = new GameStage();
+            gameStage.GameStage1(); // Esto carga el tablero de juego
+
+            GameController controller = gameStage.getGameController();
+            if (controller != null) {
+                controller.setBoard(boardListo);
+                System.out.println("Board enviado al controlador de juego");
+            } else {
+                System.err.println("GameController es null");
+            }
+        } else {
+            System.out.println("aún no has colocado todos los barcos");
+        }
+
+    }
 
 
     public void startPlay (Player player){

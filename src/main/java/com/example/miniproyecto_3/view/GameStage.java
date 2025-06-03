@@ -13,7 +13,7 @@ import java.io.IOException;
 public class GameStage extends Stage{
     private GameController gameController;
     private Parent root;
-    private PlacementController placementeController;
+    private PlacementController placementController;
 
     public GameStage(){}
 
@@ -40,7 +40,7 @@ public class GameStage extends Stage{
                 getClass().getResource("/com/example/miniproyecto_3/placement-view.fxml"));
         try{
             root = loader.load();
-            placementeController = loader.getController();
+            placementController = loader.getController();
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class GameStage extends Stage{
         return gameController;
     }
 
-    public PlacementController getPlacementController(){return placementeController;}
+    public PlacementController getPlacementController(){return placementController;}
 
     private static class GameStageHolder {
         private static GameStage INSTANCE;
@@ -69,8 +69,12 @@ public class GameStage extends Stage{
     }
 
     public static void deleteInstance() {
-        GameStageHolder.INSTANCE.close();
-        GameStageHolder.INSTANCE = null;
+        if (GameStageHolder.INSTANCE != null) {
+            GameStageHolder.INSTANCE.close();
+            GameStageHolder.INSTANCE = null;
+        } else {
+            System.out.println("No hay instancia activa de GameStage para cerrar.");
+        }
     }
 
 }

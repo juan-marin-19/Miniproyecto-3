@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="599.0" prefWidth="958.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.miniproyecto_3.controller.PlacementController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.miniproyecto_3.controller.PlacementController">
     <top>
         <Label prefHeight="26.0" prefWidth="64.0" text="BATTLESHIP" BorderPane.alignment="CENTER" />
     </top>
@@ -58,7 +58,7 @@
     <bottom>
         <HBox prefHeight="45.0" prefWidth="966.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="LISTO PARA JUGAR">
+            <Button mnemonicParsing="false" onAction="#handleClickContinue" text="LISTO PARA JUGAR">
                <HBox.margin>
                   <Insets left="700.0" />
                </HBox.margin>

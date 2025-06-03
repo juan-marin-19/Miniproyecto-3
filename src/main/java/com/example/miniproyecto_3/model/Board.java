@@ -10,7 +10,7 @@ public class Board {
 
     private int rows;
     private int cols;
-    private final boolean[][] occupied;
+    private boolean[][] occupied;
 
     private List<Ship> ships;
 
@@ -34,17 +34,6 @@ public class Board {
 
 
 
-    /**
-     * Coloco un barco en sus posiciones en el arreglo de celdas
-     * */
-    public void placeShip(Ship ship, List<int[]> coords) {
-        for (int[] pos : coords) {
-            int row = pos[0];
-            int col = pos[1];
-            cellGrid[row][col].placeShip(ship); // cada celda conoce qué barco está ahí
-        }
-
-    }
 
     /**
      * Método para saber si el barco se puede colocar es decir esta dentro de los limites y no se superpone con otro barco
@@ -52,14 +41,31 @@ public class Board {
      * */
     public boolean canPlaceShip(int startRow, int startCol, int length, boolean isVertical) {
 
-        return (isVertical && startRow + length - 1 <= 10) || (!isVertical && startCol + length - 1 <= 10);
+        startRow = startRow - 1;
+        startCol = startCol - 1;
+
+       if((isVertical && startRow + length - 1 < 10) || (!isVertical && startCol + length - 1 < 10)){
+           for (int i = 0; i < length; i++) {
+               int r = isVertical ? startRow + i : startRow;
+               int c = isVertical ? startCol : startCol + i;
+
+               if (occupied[r][c]) {
+                   return false; // ya hay un barco ahí
+               }
+           }
+
+           return true;
+       }
+       else{
+           return false;
+       }
+
 
     }
 
 
     /***
-     *
-     * obtengo las coordenadas de los cuadros que va a ocupar el barco, y devuelvo un array 2d con i como un arreglo de int y
+     * Obtengo las coordenadas de los cuadros que va a ocupar el barco, y devuelvo un array 2d con i como un arreglo de int y
      * es de la fila y la columna a colorear
      */
     public List<int[]> getCoordinatesForShip(int startRow, int startCol, int length, boolean isVertical) {
@@ -75,12 +81,43 @@ public class Board {
         return coords;
     }
 
-    public void placeShip(List<int[]> coords) {
+
+    /**
+     * Coloco un mismo objeto barco en las celdas indicadas (ya se hizo la validación), (isHorizontal = rotated)
+     * */
+    public void placeShip(List<int[]> coords, boolean isHorizontal) {
+        Ship ship = new Ship(coords.size(),isHorizontal);
         for (int[] pos : coords) {
-            occupied[pos[0]][pos[1]] = true;
+            //posiciono el mismo objeto barco en las celdas coordenadas correctas que se obtuvieron
+            cellGrid[pos[0]-1][pos[1]-1].placeShip(ship);
+            occupied[pos[0]-1][pos[1]-1] = true;
         }
+        for(int i =0; i < 10; i++){
+            for(int j =0; j < 10; j++){
+                System.out.print( occupied[i][j] ? "O " : "X ") ;
+            }
+            System.out.println();
+        }
+        System.out.println("\n\n");
+
+        printCellGrid();
+
+
     }
 
+
+    public void printCellGrid() {
+        for(int i =0; i < 10; i++){
+            for(int j =0; j < 10; j++){
+                if (occupied[i][j]) {
+                    System.out.print(cellGrid[i][j].getShip().getSize() + " ");
+                }else{
+                    System.out.print("x ");
+                }
+            }
+            System.out.println();
+        }
+    }
 
     public Cell getCell(int row, int col) {
         return cellGrid[row][col];

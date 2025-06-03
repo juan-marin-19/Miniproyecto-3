@@ -1,5 +1,7 @@
 package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.Board;
+import com.example.miniproyecto_3.model.*;
+
 import com.example.miniproyecto_3.model.Cell;
 import com.example.miniproyecto_3.model.Machine;
 import javafx.fxml.FXML;
@@ -27,14 +29,14 @@ public class GameController {
     private Machine machine;
 
     public GameController() {
-
-
     }
 
     public void initialize() {
-        this.playerBoard = new Board(10,10);
+
+        this.playerBoard = new Board(10, 10); // Solo si no fue seteado antes
+
         this.machineBoard = new Board(10,10);
-        drawPlayerGrid();
+
     }
 
 
@@ -46,6 +48,9 @@ public class GameController {
 
         for (int i = 1; i < 11; i++) {
             for (int j = 1; j < 11; j++) {
+
+                boolean shipThere = playerBoard.getCell(j-1,i-1).getShip() != null;
+
                 Button button = new Button();
 
                 GridPane.setHgrow(button, Priority.ALWAYS);
@@ -53,6 +58,8 @@ public class GameController {
                 button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
                 button.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: lightblue;");
+
+                if(shipThere)  button.setStyle("-fx-border-color: black; -fx-border-width: 2px; -fx-background-color: red;");
 
                 // button.setPrefWidth(10);   // Ancho preferido
               //  button.setPrefHeight(5);
@@ -63,10 +70,13 @@ public class GameController {
 
                 playerGrid.add(button, i, j);
 
+
                //boton para manejar los disparo
 
             }
         }
+
+        System.out.println(" ");
 
     }
 
@@ -76,6 +86,16 @@ public class GameController {
 
     private void handlePlayerShot(int row, int col) {
 
+    }
+
+    /**
+     * METODO donde se inicia la ventana de juego, se dibuja la pantalla luego de que board se halla puesto una vez se termino
+     * de colocar en el placement controller.
+     * */
+    public void setBoard(Board board) {
+        this.playerBoard = board;
+        drawPlayerGrid();
+        playerBoard.printCellGrid();
     }
 
     public void updatePlayerGrid() {}

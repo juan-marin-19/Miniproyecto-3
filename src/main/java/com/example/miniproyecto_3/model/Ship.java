@@ -9,25 +9,25 @@ public class Ship {
 
 
     /**
-     *la clase barco tiene una lista de celdas asociadas las cuales a su vez guardan su posicion en el arreglo2d board
+     *la clase barco tiene una lista de celdas asociadas las cuales a su vez guardan su posición en el arreglo2d board
      *
-     * tiene la orientacion 0 = horizontal, 1 = vertical
+     * tiene la orientación, verdadero = horizontal, falso = vertical
      *
      * y el tamaño del barco
      * */
-    private int orientation;
+    private boolean orientation;
     private int size;
 
     private List<Cell> cells; // donde está el barco
 
-    public Ship(int size, int orientation) {
+    public Ship(int size, boolean orientation) {
         this.size = size;
         this.orientation = orientation;
         this.cells = new ArrayList<>();
     }
 
     public int getSize() { return size; }
-    public int getOrientation() { return orientation; }
+    public boolean getOrientation() { return orientation; }
 
     // añade una celda a un barco
     public void addCell(Cell cell) {
