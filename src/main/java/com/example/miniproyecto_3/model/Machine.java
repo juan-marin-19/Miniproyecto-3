@@ -12,7 +12,7 @@ public class Machine implements Serializable {
     private int sunkenShips;
 
     public Machine( int sunkenShips) {
-        board = new Board();
+        board = new Board(10,10);
         this.sunkenShips = sunkenShips;
     }
 
