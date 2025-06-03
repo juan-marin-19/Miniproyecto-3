@@ -17,12 +17,17 @@ public class Machine implements Serializable {
     }
 
 
+
     public Board getBoard() {
         return board;
     }
 
     public void makeMove(Board playerBoard) {
         // lógica para que la máquina dispare aleatoriamente en el board del jugador
+    }
+
+    public void fillBoard(){
+
     }
 
     public int getSunkenShips() {
