@@ -12,9 +12,10 @@ public class Machine implements Serializable {
     private int sunkenShips;
 
     public Machine( int sunkenShips) {
-        board = new Board();
+        board = new Board(10,10);
         this.sunkenShips = sunkenShips;
     }
+
 
 
     public Board getBoard() {
@@ -23,6 +24,10 @@ public class Machine implements Serializable {
 
     public void makeMove(Board playerBoard) {
         // lógica para que la máquina dispare aleatoriamente en el board del jugador
+    }
+
+    public void fillBoard(){
+
     }
 
     public int getSunkenShips() {

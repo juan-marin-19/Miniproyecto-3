@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private final int rows = 10;
-    private final int cols = 10;
-    private Cell[][] grid;
+
+    private Cell[][] cellGrid = new Cell[10][10];
+
+    private int rows;
+    private int cols;
+    private boolean[][] occupied;
 
     private List<Ship> ships;
 
@@ -15,61 +18,113 @@ public class Board {
     /**
      * Constructor del tablero. Inicializa una matriz 10x10 de objetos celdas.
      */
-    public Board() {
-        grid = new Cell[rows][cols];
-        ships = new ArrayList<>();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                grid[i][j] = new Cell(i, j);
+    public Board(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+        this.occupied = new boolean[rows][cols];
+        // inicialmente vacío
+
+        for (int r = 0; r < 10; r++) {
+            for (int c = 0; c < 10; c++) {
+                cellGrid[r][c] = new Cell(r, c);
             }
         }
+
     }
 
+
+
+
     /**
-     * Coloca un barco en el tablero si el espacio está libre.
-     * @param ship El barco a colocar.
-     * @param startRow Fila inicial.
-     * @param startCol Columna inicial.
-     * @return true si se colocó correctamente, false si había conflicto o salía del tablero.
+     * Método para saber si el barco se puede colocar es decir esta dentro de los limites y no se superpone con otro barco
+     *
+     * */
+    public boolean canPlaceShip(int startRow, int startCol, int length, boolean isVertical) {
+
+        startRow = startRow - 1;
+        startCol = startCol - 1;
+
+       if((isVertical && startRow + length - 1 < 10) || (!isVertical && startCol + length - 1 < 10)){
+           for (int i = 0; i < length; i++) {
+               int r = isVertical ? startRow + i : startRow;
+               int c = isVertical ? startCol : startCol + i;
+
+               if (occupied[r][c]) {
+                   return false; // ya hay un barco ahí
+               }
+           }
+
+           return true;
+       }
+       else{
+           return false;
+       }
+
+
+    }
+
+
+    /***
+     * Obtengo las coordenadas de los cuadros que va a ocupar el barco, y devuelvo un array 2d con i como un arreglo de int y
+     * es de la fila y la columna a colorear
      */
+    public List<int[]> getCoordinatesForShip(int startRow, int startCol, int length, boolean isVertical) {
+        List<int[]> coords = new ArrayList<>();
+        if (!canPlaceShip(startRow, startCol, length, isVertical)) {
+            return coords; // vacío si no se puede
+        }
+        for (int i = 0; i < length; i++) {
+            int r = isVertical ? startRow + i : startRow;
+            int c = isVertical ? startCol : startCol + i;
+            coords.add(new int[]{r, c});
+        }
+        return coords;
+    }
 
-    public boolean placeShip(Ship ship, int startRow, int startCol) {
-        int size = ship.getSize();
-        int orientation = ship.getOrientation();
 
-
-
-        List<Cell> positions = new ArrayList<>();
-
-
-        //Calcula la posición de cada celda que ocupará el barco
-        for (int i = 0; i < size; i++) {
-            int row = startRow + (orientation == 1 ? i : 0);
-            int col = startCol + (orientation == 0 ? i : 0);
-
-            if (row >= rows || col >= cols || grid[row][col].hasShip()) {
-                return false; // fuera del tablero o solapado
+    /**
+     * Coloco un mismo objeto barco en las celdas indicadas (ya se hizo la validación), (isHorizontal = rotated)
+     * */
+    public void placeShip(List<int[]> coords, boolean isHorizontal) {
+        Ship ship = new Ship(coords.size(),isHorizontal);
+        for (int[] pos : coords) {
+            //posiciono el mismo objeto barco en las celdas coordenadas correctas que se obtuvieron
+            cellGrid[pos[0]-1][pos[1]-1].placeShip(ship);
+            occupied[pos[0]-1][pos[1]-1] = true;
+        }
+        for(int i =0; i < 10; i++){
+            for(int j =0; j < 10; j++){
+                System.out.print( occupied[i][j] ? "O " : "X ") ;
             }
-
-            positions.add(grid[row][col]);
+            System.out.println();
         }
+        System.out.println("\n\n");
 
-        // Asignar el barco a las celdas
-        for (Cell cell : positions) {
-            cell.setShip(ship);
-            ship.addCell(cell);
+        printCellGrid();
+
+
+    }
+
+
+    public void printCellGrid() {
+        for(int i =0; i < 10; i++){
+            for(int j =0; j < 10; j++){
+                if (occupied[i][j]) {
+                    System.out.print(cellGrid[i][j].getShip().getSize() + " ");
+                }else{
+                    System.out.print("x ");
+                }
+            }
+            System.out.println();
         }
-
-        ships.add(ship);
-        return true;
     }
 
     public Cell getCell(int row, int col) {
-        return grid[row][col];
+        return cellGrid[row][col];
     }
 
     public Cell[][] getGrid() {
-        return grid;
+        return  cellGrid;
     }
 
 
