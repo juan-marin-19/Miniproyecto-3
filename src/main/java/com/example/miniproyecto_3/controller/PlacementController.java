@@ -177,6 +177,7 @@ public class PlacementController {
 
                         //IMPORTANTE!!!!!!!!!!!!
                         // 2. Colocar visualmente el barco en la celda usando drawship y metodos del modelo!!!!!
+                        drawShips(currentShip, finalRow, finalCol);
 
 
 
@@ -209,6 +210,60 @@ public class PlacementController {
 
 
     private void drawShips(Ship ship,int row,int col){
+        boolean placed = playerBoard.placeShip(ship,row,col);
+        if(!placed){
+            System.out.println("No se pudo colocar el barco, la posicion ya esta ocupada");
+            return;
+        }
+        Pane contenedor = new Pane();
+        Group figure = null;
+        double  baseWidth = 50;
+        double baseHeight = 0;
+
+        switch (ship.getSize()) {
+            case 1 -> {
+                figure = Figures.Fragata(Color.LIGHTBLUE, Color.BLACK);
+                baseHeight = 50;
+            }
+            case 2 -> {
+                figure = Figures.Destructor(Color.LIGHTBLUE, Color.BLACK);
+                baseHeight = 100;
+            }
+            case 3 -> {
+                figure = Figures.Submarine(Color.LIGHTBLUE, Color.BLACK);
+                baseHeight = 150;
+            }
+            case 4 -> {
+                figure = Figures.Portaaviones(Color.LIGHTBLUE, Color.BLACK);
+                baseHeight = 200;
+            }
+            default -> {
+                figure = null;
+                baseHeight = 50;
+            }
+        }
+        if(figure == null){
+            System.out.println("Tamaño de barco no válido");
+            return;
+        }
+
+        contenedor.getChildren().add(figure);
+        StackPane cell = getCellPane(row + 1,col + 1);
+        if(cell != null){
+            cell.getChildren().add(contenedor);
+        }
+
+        if(ship.getOrientation() == 0){
+            GridPane.setColumnSpan(contenedor, ship.getSize());
+        }else{
+            GridPane.setRowSpan(contenedor, ship.getSize());
+        }
+
+        playerGrid.applyCss();
+        playerGrid.layout();
+
+        Figures.prepareFigures(figure, contenedor, baseWidth, baseHeight, ship.getOrientation());
+
 
 
     }
@@ -216,7 +271,12 @@ public class PlacementController {
 
     private StackPane getCellPane ( int row, int col){
             for (Node n : playerGrid.getChildren()) {
-                if (GridPane.getRowIndex(n) == row && GridPane.getColumnIndex(n) == col) {
+
+                Integer r = GridPane.getRowIndex(n);
+                Integer c = GridPane.getColumnIndex(n);
+                int rowIndex = (r == null) ? 0 : r;
+                int colIndex = (c == null) ? 0 : c;
+                if (rowIndex == row && colIndex == col) {
                     return (StackPane) n;
                 }
             }
