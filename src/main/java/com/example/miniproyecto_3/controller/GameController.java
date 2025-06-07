@@ -4,6 +4,7 @@ import com.example.miniproyecto_3.model.*;
 
 import com.example.miniproyecto_3.model.Cell;
 import com.example.miniproyecto_3.model.Machine;
+import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
@@ -22,6 +23,7 @@ public class GameController {
 
     private Board playerBoard;
     private Board machineBoard;
+    private SeriazableFileHandler seriazableFileHandler =  new SeriazableFileHandler();
 
 
     //private Player player;
@@ -33,9 +35,19 @@ public class GameController {
 
     public void initialize() {
 
-        this.playerBoard = new Board(10, 10); // Solo si no fue seteado antes
+        //se desserializa el board del jugador
+        try{
+            this.playerBoard = (Board) seriazableFileHandler.deserialize("board_data.ser");
+            System.out.println("se cargo exitosamente el tablero");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("error al cargar el tablero");
+            this.playerBoard = new Board(10, 10); // Solo si no fue seteado antes
+        }
 
         this.machineBoard = new Board(10,10);
+        drawPlayerGrid();
+        playerBoard.printCellGrid();
 
     }
 
@@ -94,7 +106,7 @@ public class GameController {
      * de colocar en el placement controller.
      * */
     public void setBoard(Board board) {
-        this.playerBoard = board;
+        this.playerBoard = board; // ya no necesitariamos esta funcion ¿?
         drawPlayerGrid();
         playerBoard.printCellGrid();
     }

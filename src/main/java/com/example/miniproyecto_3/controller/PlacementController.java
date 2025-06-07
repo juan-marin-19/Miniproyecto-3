@@ -1,5 +1,6 @@
 package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.*;
+import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import com.example.miniproyecto_3.view.Figures;
 import com.example.miniproyecto_3.view.GameStage;
@@ -35,6 +36,7 @@ public class PlacementController {
     private List<int[]> shipFinalCoords = new ArrayList<>(); // lista para guardar las coordenadas correctas de un ship
     private int numShipsPlaced = 0;
     private PlainTextFileReader plainTextFileReader;
+    private SeriazableFileHandler seriazableFileHandler =  new SeriazableFileHandler(); //creo una instancia de la clase SeriazableFileHandler
 
 
     @FXML
@@ -456,13 +458,15 @@ public class PlacementController {
             GameStage gameStage = new GameStage();
             gameStage.GameStage1(); // Esto carga el tablero de juego
 
-            GameController controller = gameStage.getGameController();
+            seriazableFileHandler.serialize("board_data.ser", boardListo); //serializa el tablero
+
+           /* GameController controller = gameStage.getGameController(); //ya no se necesita darle el tablero
             if (controller != null) {
                 controller.setBoard(boardListo);
                 System.out.println("Board enviado al controlador de juego");
             } else {
                 System.err.println("GameController es null");
-            }
+            }*/
         } else {
             System.out.println("aún no has colocado todos los barcos");
         }

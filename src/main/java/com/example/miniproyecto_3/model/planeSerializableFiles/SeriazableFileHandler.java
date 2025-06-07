@@ -3,6 +3,9 @@ package com.example.miniproyecto_3.model.planeSerializableFiles;
 import java.io.*;
 
 public class SeriazableFileHandler implements ISeriazableFileHandler {
+
+    public void SeriazableFileHandler() {}
+
     @Override
     public void serialize(String fileName, Object element) {
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
