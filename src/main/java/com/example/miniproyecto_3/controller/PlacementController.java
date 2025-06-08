@@ -454,11 +454,13 @@ public class PlacementController {
             // Aquí ya se colocaron los barcos
             Board boardListo = playerBoard; // o como tengas el board final
             Player player = this.player; // el jugador
+            seriazableFileHandler.serialize("board_data.ser", boardListo); //serializa el tablero, esto va antes de crear el gamestage
+
 
             GameStage gameStage = new GameStage();
             gameStage.GameStage1(); // Esto carga el tablero de juego
 
-            seriazableFileHandler.serialize("board_data.ser", boardListo); //serializa el tablero
+
 
            /* GameController controller = gameStage.getGameController(); //ya no se necesita darle el tablero
             if (controller != null) {
