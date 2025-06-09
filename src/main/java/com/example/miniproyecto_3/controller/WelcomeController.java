@@ -23,9 +23,10 @@ public class WelcomeController {
 
     @FXML
     public void handleClickPlay(javafx.event.ActionEvent event) {
+
         if (!nickname.getText().isEmpty()) {
             Player player = new Player(nickname.getText().trim(), 0);
-            String content = player.getNickname() + "," + player.getSunkenShips();
+            String content = player.getNickname() + "," + player.getSunkenShips() + "," + "false";
             plainTextFileReader.writeToFile("player_data.csv", content);
 
             WelcomeStage.deleteInstance();
@@ -43,7 +44,7 @@ public class WelcomeController {
             //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL
 
             if (controller != null) {
-                controller.startPlay(player);
+                controller.setPlayer(player);
             } else {
                 System.err.println("Error: Placecontroller is null");
             }
@@ -57,7 +58,8 @@ public class WelcomeController {
     public void handleClickContinue(javafx.event.ActionEvent event) {
 
         String[] data = plainTextFileReader.readFromFile("player_data.csv");
-        if (data.length != 0) {
+        boolean ableToContinue = Boolean.parseBoolean(data[2]);
+        if (ableToContinue) {
             String nickname = data[0];
             int sunkenBoats = Integer.parseInt(data[1]);
             Player player = new Player(nickname, sunkenBoats);
@@ -74,8 +76,8 @@ public class WelcomeController {
 
             GameController controller = gameStage.getGameController();
             if (controller != null) {
-                System.out.println("not null");
-                System.out.println(nickname + ",  " + sunkenBoats);
+                controller.setPlayer(player);
+                controller.startGame();
             } else {
                 System.err.println("Error: GameController is null");
             }
