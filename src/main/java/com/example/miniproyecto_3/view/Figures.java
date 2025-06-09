@@ -7,6 +7,7 @@ import javafx.scene.shape.*;
 import javafx.scene.transform.Scale;
 
 public class Figures {
+
     public static Group crearEquis(Color color, double grosor) {
         Path equis = new Path(
                 new MoveTo(0, 0),
@@ -69,6 +70,7 @@ public class Figures {
         rect.setFill(Color.BLACK);
         return new Group(portaaviones, pista, plane1,plane2, plane3, plane4,plane5,rect,plane6);
     }
+
     public static Group Destructor(Color colorRelleno, Color colorBorde){
         Path destructor = new Path();
         destructor.getElements().addAll(

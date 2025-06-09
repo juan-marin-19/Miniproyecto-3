@@ -1,8 +1,9 @@
-module com.example.miniproyecto_3 {
+module com.example.miniproyecto_ {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.desktop;
 
+    exports com.example.miniproyecto_3.model;
 
     opens com.example.miniproyecto_3 to javafx.fxml;
     exports com.example.miniproyecto_3;
