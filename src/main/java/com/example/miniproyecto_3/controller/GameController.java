@@ -1,8 +1,6 @@
 package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.Board;
-import com.example.miniproyecto_3.model.*;
 
-import com.example.miniproyecto_3.model.Cell;
 import com.example.miniproyecto_3.model.Machine;
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import javafx.fxml.FXML;
@@ -20,15 +18,15 @@ public class GameController {
     @FXML
     private GridPane mainGrid;
 
-
+    private Player player;
+    private Machine machine;
     private Board playerBoard;
     private Board machineBoard;
-    private SeriazableFileHandler seriazableFileHandler =  new SeriazableFileHandler();
+    private SeriazableFileHandler seriazableFileHandler;
 
 
-    //private Player player;
 
-    private Machine machine;
+
 
     public GameController() {
     }
@@ -49,9 +47,9 @@ public class GameController {
         drawPlayerGrid();
         playerBoard.printCellGrid();
 
+        this.seriazableFileHandler = new SeriazableFileHandler();
+
     }
-
-
 
 
     private void drawPlayerGrid() {
@@ -105,14 +103,26 @@ public class GameController {
      * METODO donde se inicia la ventana de juego, se dibuja la pantalla luego de que board se halla puesto una vez se termino
      * de colocar en el placement controller.
      * */
-    public void setBoard(Board board) {
-        this.playerBoard = board; // ya no necesitariamos esta funcion ¿?
+
+    public void startGame() {
+        playerBoard = (Board) seriazableFileHandler.deserialize("player_board.ser");
         drawPlayerGrid();
         playerBoard.printCellGrid();
     }
 
+    /**
+     * Coloco el player ya sea desde el controlador placement o si ya había una partida, coloco el player con los datos
+     * guardados (nombre y barcos hundidos)
+     * */
+    public void setPlayer(Player player) {
+        this.player = player;
+        System.out.println(player.getSunkenShips());
+        System.out.println(player.getNickname());
+    }
+
     public void updatePlayerGrid() {}
     public void updateMachineGrid() {}
+
 }
 
 

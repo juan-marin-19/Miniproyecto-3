@@ -7,10 +7,12 @@ import java.io.Serializable;
     public class Player implements Serializable {
         private String nickname;
         private int sunkenShips;
+        private boolean ableToContinue;
 
         public Player(String nickname, int sunkenShips) {
             this.nickname = nickname;
             this.sunkenShips = sunkenShips;
+
         }
 
         public String getNickname() {

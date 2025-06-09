@@ -4,23 +4,17 @@ import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHan
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import com.example.miniproyecto_3.view.Figures;
 import com.example.miniproyecto_3.view.GameStage;
-import com.example.miniproyecto_3.view.WelcomeStage;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
+import com.example.miniproyecto_3.model.Player;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +29,8 @@ public class PlacementController {
     private Group currentShipVisual = null;  // referencia de versionShip, para manejar el cambio de orientación
     private List<int[]> shipFinalCoords = new ArrayList<>(); // lista para guardar las coordenadas correctas de un ship
     private int numShipsPlaced = 0;
+    private SeriazableFileHandler seriazableFileHandler;
     private PlainTextFileReader plainTextFileReader;
-    private SeriazableFileHandler seriazableFileHandler =  new SeriazableFileHandler(); //creo una instancia de la clase SeriazableFileHandler
 
 
     @FXML
@@ -54,12 +48,12 @@ public class PlacementController {
 
     public PlacementController() {
         this.plainTextFileReader = new PlainTextFileReader();
-
+        this.seriazableFileHandler = new SeriazableFileHandler();
     }
 
 
     /**
-     * CARGO las figuras, y las funciones para el movimiento, dibujo de todo , y los clicks
+     * CARGO las figuras, y las funciones para el movimiento, dibujo el grid
      */
     public void initialize() {
         this.playerBoard = new Board(10, 10);
@@ -131,10 +125,8 @@ public class PlacementController {
     }
 
 
-
-
     /**
-     * NUEVO METODO
+     * Cargo los barcos, manejo el movimiento de los barcos, su posición visual, y lo coloco en el modelo.
      */
     private void loadShipPalette(Group shipVersion,int version){
 
@@ -146,7 +138,6 @@ public class PlacementController {
 
 
         // Guardamos la posición original para poder "volver" si es necesario
-
         final List<StackPane> previouslyHighlighted = new ArrayList<>();
 
 
@@ -158,7 +149,7 @@ public class PlacementController {
             currentShipVisual = shipVersion;
 
 
-            // Mover el barco al root del flowPane al anchorPane para que se vea encima de todo
+            // Mover el barco del root del flowPane al anchorPane para que se vea encima
 
             Bounds shipBounds = shipVersion.localToScene(shipVersion.getBoundsInLocal());
 
@@ -325,10 +316,10 @@ public class PlacementController {
             // Por ahora, siempre vuelve a la paleta
 
 
+            // El arreglo no esta vacío entonces hay que colocar el barco donde nos indica las coordenadas
             if(!shipFinalCoords.isEmpty()) {
-                // El arreglo no tiene nada entonces hay que colocar el barco donde nos indica las coordenadas
-                //  rootPane.getChildren().remove(shipVersion);
-                //añado el barco a el arreglo de cell en el modelo board.
+
+                //añado el barco al arreglo de cells en el modelo board.
                 playerBoard.placeShip(shipFinalCoords,rotated);
 
                 //add the ship to the grid visually
@@ -405,14 +396,12 @@ public class PlacementController {
 
 
     /**
-     * NUEVO METODO
+     * Cargo los stackPane al gridPane donde van los barcos.
      * */
     private void drawBoard() {
         for (int i = 1; i < 11; i++) {
             for (int j = 1; j < 11; j++) {
-
-
-                // agrega un stackpane para poder superponer los barcos
+                // agrega un stackPane para poder superponer los barcos
                 StackPane cell = new StackPane();
                 cell.setPrefSize(100, 100);
                 cell.setStyle("-fx-border-color: black; -fx-background-color: white;");
@@ -427,7 +416,9 @@ public class PlacementController {
         }
 
 
-
+    /**
+     * Obtengo la celda de referencia para colocar el barco una vez se soltó.
+     * */
     public Node getCellPane(GridPane gridPane, int row, int col) {
         for (Node node : gridPane.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
@@ -446,11 +437,14 @@ public class PlacementController {
     }
 
 
-
-
+    /**
+     * Continuo el juego cuando se coloquen los barcos, paso el jugador, y el board del modelo.
+     */
     @FXML
     public void handleClickContinue(javafx.event.ActionEvent event){
         if(numShipsPlaced==10){
+
+
             // Aquí ya se colocaron los barcos
             Board boardListo = playerBoard; // o como tengas el board final
             Player player = this.player; // el jugador
@@ -460,15 +454,28 @@ public class PlacementController {
             GameStage gameStage = new GameStage();
             gameStage.GameStage1(); // Esto carga el tablero de juego
 
+            GameController controller = gameStage.getGameController();
 
-
-           /* GameController controller = gameStage.getGameController(); //ya no se necesita darle el tablero
             if (controller != null) {
-                controller.setBoard(boardListo);
+
+                /*leo el archivo plano y cambio el valor ableToContinue para poder continuar(botón continuar welcomeStage)
+             pq significa en este punto ya hay un board para jugar
+             */
+                String content = player.getNickname() + "," + player.getSunkenShips() + "," + "true";
+                plainTextFileReader.writeToFile("player_data.csv", content);
+
+
+                //serializo board para poder usarlo en gameController
+                seriazableFileHandler.serialize("player_board.ser",boardListo);
+
+
+                controller.startGame();
+                controller.setPlayer(player);
+
                 System.out.println("Board enviado al controlador de juego");
             } else {
                 System.err.println("GameController es null");
-            }*/
+            }
         } else {
             System.out.println("aún no has colocado todos los barcos");
         }
@@ -476,24 +483,11 @@ public class PlacementController {
     }
 
 
-    private StackPane getCellPane ( int row, int col){
-            for (Node n : playerGrid.getChildren()) {
 
-                Integer r = GridPane.getRowIndex(n);
-                Integer c = GridPane.getColumnIndex(n);
-                int rowIndex = (r == null) ? 0 : r;
-                int colIndex = (c == null) ? 0 : c;
-                if (rowIndex == row && colIndex == col) {
-                    return (StackPane) n;
-                }
-            }
-            return null;
-        }
-
-
-
-
-        public void startPlay (Player player){
+    /**
+     * Constructor para el objeto jugador donde se guardan datos del jugador
+     * */
+    public void setPlayer(Player player){
             this.player = player;
             System.out.println(player.getSunkenShips());
             System.out.println(player.getNickname());
