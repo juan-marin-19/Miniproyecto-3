@@ -329,20 +329,38 @@ public class PlacementController {
                 double pivotY = cellBounds.getHeight() / 2;
 
                 if(!rotated){
-                    shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                    shipVersion.setLayoutY(cellBounds.getMinY()-39);
+                    if (version==1){
+                        shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-32);
+                    }
+                    else if (version==2) {
+                        shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-39);
+                    }
+                    else if (version==3) {
+                        shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-41);
+                    }
+                    else{
+                        shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-44);
+                    }
+
+
                 }else{
                     shipVersion.getTransforms().add(new Rotate(270, pivotX, pivotY));
                     shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-
-                    if(version==3) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-35);
-                    }else if(version == 1) {
+                    
+                    if(version == 1) {
                         shipVersion.setLayoutY(cellBounds.getMinY() - 25);
                     }
                     else if(version==2) {
                         shipVersion.setLayoutY(cellBounds.getMinY()-30);
-                    }else{
+                    }
+                    else if(version==3) {
+                        shipVersion.setLayoutY(cellBounds.getMinY()-35);
+                    }
+                    else{
                         shipVersion.setLayoutY(cellBounds.getMinY()-40);
                     }
 
@@ -416,7 +434,7 @@ public class PlacementController {
 
 
     /**
-     * Obtengo la celda de referencia para colocar el barco una vez se soltó.
+     * Obtengo la celda de referencia para colocar el barco una vez se soltó.(HACER HERENCIA CLASE ADAPTADORA)
      * */
     public Node getCellPane(GridPane gridPane, int row, int col) {
         for (Node node : gridPane.getChildren()) {
