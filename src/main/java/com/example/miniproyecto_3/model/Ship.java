@@ -1,5 +1,7 @@
 package com.example.miniproyecto_3.model;
 
+import javafx.scene.paint.Color;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ public class Ship implements Serializable {
      * */
     private boolean orientation;
     private int size;
+    private boolean aux;
 
     private List<Cell> cells; // donde está el barco
 
@@ -41,6 +44,10 @@ public class Ship implements Serializable {
     /**
      * Verifica si el barco está completamente hundido (todas sus celdas han sido disparadas).
      */
+
+
+    public boolean getAux() { return aux; }
+    public void setAux(boolean aux) { this.aux = aux; }
 
     public void registerHit(){
 
