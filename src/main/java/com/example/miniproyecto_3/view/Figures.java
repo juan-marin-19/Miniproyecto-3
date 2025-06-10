@@ -181,4 +181,14 @@ public class Figures {
             figura.getTransforms().add(escala);
 
     }
+
+    public static Group createShip(int size, Color colorRelleno, Color colorBorde) {
+        return switch (size) {
+            case 1 -> Fragata(colorRelleno, colorBorde);
+            case 2 -> Destructor(colorRelleno, colorBorde);
+            case 3 -> Submarine(colorRelleno, colorBorde);
+            case 4 -> Portaaviones(colorRelleno, colorBorde);
+            default -> throw new IllegalArgumentException("Tamaño de barco no válido: " + size);
+        };
+    }
 }
