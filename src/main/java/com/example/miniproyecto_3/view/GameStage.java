@@ -24,6 +24,7 @@ public class GameStage extends Stage {
             root = loader.load();
             gameController = loader.getController();
         } catch (IOException e){
+            System.out.println("No se pudo cargar la vista");
             e.printStackTrace();
         }
         Scene scene = new Scene(root);
@@ -42,6 +43,7 @@ public class GameStage extends Stage {
             root = loader.load();
             placementController = loader.getController();
         } catch (IOException e){
+            System.out.println("No se pudo cargar la vista");
             e.printStackTrace();
         }
         Scene scene = new Scene(root);

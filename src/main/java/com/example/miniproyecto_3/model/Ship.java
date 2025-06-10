@@ -42,7 +42,6 @@ public class Ship implements Serializable {
      * Verifica si el barco está completamente hundido (todas sus celdas han sido disparadas).
      */
 
-
     public void registerHit(){
 
     }

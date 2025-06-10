@@ -3,6 +3,7 @@ package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.Player;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import javafx.fxml.FXML;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.TextField;
 import com.example.miniproyecto_3.view.WelcomeStage;
 import com.example.miniproyecto_3.view.GameStage;
@@ -37,16 +38,15 @@ public class WelcomeController {
             // Asegúrate de que el controlador no sea null antes de llamar startPlay
 
             //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL
-
-            PlacementController controller = gameStage.getPlacementController();
-            // Asegúrate de que el controlador no sea null antes de llamar startPlay
-
-            //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL
-
-            if (controller != null) {
-                controller.setPlayer(player);
-            } else {
-                System.err.println("Error: Placecontroller is null");
+            try {
+                PlacementController controller = gameStage.getPlacementController();
+                if (controller != null) {
+                    controller.setPlayer(player);
+                } else {
+                    throw new NullPointerException("PlacementController es null");
+                }
+            } catch (Exception e){
+                System.out.println("Error al inicializar el placementController:" + e.getMessage());
             }
         } else {
             System.out.println("El nombre de usuario está vacío.");
@@ -72,14 +72,16 @@ public class WelcomeController {
 
             // Asegúrate de que el controlador no sea null antes de llamar startPlay
 
-            //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL
-
-            GameController controller = gameStage.getGameController();
-            if (controller != null) {
-                controller.setPlayer(player);
-                controller.startGame();
-            } else {
-                System.err.println("Error: GameController is null");
+            try {
+                GameController controller = gameStage.getGameController();
+                if (controller != null) {
+                    controller.setPlayer(player);
+                    controller.startGame();
+                } else {
+                    throw new NullPointerException("GameController es null");
+                }
+            } catch (Exception e){
+                System.out.println("Error al inicializar el GameController:" + e.getMessage());
             }
         } else {
             System.out.println("no hay partida!!");

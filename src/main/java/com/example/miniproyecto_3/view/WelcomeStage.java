@@ -38,7 +38,11 @@ public class WelcomeStage extends Stage {
             System.err.println("Error al cargar el icono: " + e.getMessage());
         }
 
-        scene.getStylesheets().add((getClass().getResource("/css/welcomeViewStyle.css")).toExternalForm());
+        try {
+            scene.getStylesheets().add((getClass().getResource("/css/welcomeViewStyle.css")).toExternalForm());
+        }catch(Exception e){
+            System.out.println("Error al cargar la hoja de estilo:" + e.getMessage());
+        }
         setScene(scene);
         setTitle("Battleship");
         setResizable(false);

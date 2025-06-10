@@ -91,8 +91,12 @@ public class Board implements Serializable {
         Ship ship = new Ship(coords.size(),isHorizontal);
         for (int[] pos : coords) {
             //posiciono el mismo objeto barco en las celdas coordenadas correctas que se obtuvieron
-            cellGrid[pos[0]-1][pos[1]-1].placeShip(ship);
-            occupied[pos[0]-1][pos[1]-1] = true;
+            try {
+                cellGrid[pos[0] - 1][pos[1] - 1].placeShip(ship);
+                occupied[pos[0] - 1][pos[1] - 1] = true;
+            } catch(ArrayIndexOutOfBoundsException e) {  // atrapa la excepcion que se da cuando alguno de los indices calculados estan fuera del rango 0-9
+                System.out.println("Error: coordenadas fuera del tablero en [" + pos[0] + ";" + pos[1] + "]");
+            }
         }
         for(int i =0; i < 10; i++){
             for(int j =0; j < 10; j++){
