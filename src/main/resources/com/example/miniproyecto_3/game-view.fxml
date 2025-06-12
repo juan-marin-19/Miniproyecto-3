@@ -10,12 +10,12 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="622.0" prefWidth="1016.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.miniproyecto_3.controller.GameController">
    <top>
-      <Label prefHeight="26.0" prefWidth="64.0" text="BATTLESHIP" BorderPane.alignment="CENTER" />
+      <Label prefHeight="30.0" prefWidth="71.0" text="BATTLESHIP" BorderPane.alignment="CENTER" />
    </top>
    <center>
       <HBox prefHeight="502.0" prefWidth="966.0" BorderPane.alignment="CENTER">
          <children>
-            <AnchorPane fx:id="playerAnchorPane" prefHeight="553.0" prefWidth="1015.0">
+            <AnchorPane fx:id="playerAnchorPane" prefHeight="533.0" prefWidth="1015.0">
                <children>
                   <Label layoutX="213.0" layoutY="521.0" text="TABLERO POSICION" />
                   <GridPane fx:id="playerGrid" alignment="CENTER" gridLinesVisible="true" layoutX="14.0" layoutY="52.0" prefHeight="447.0" prefWidth="483.0">

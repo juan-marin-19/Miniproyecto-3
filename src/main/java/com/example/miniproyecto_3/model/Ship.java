@@ -20,6 +20,7 @@ public class Ship implements Serializable {
     private boolean orientation;
     private int size;
     private boolean aux;
+    private int lifes;
 
     private List<Cell> cells; // donde está el barco
 
@@ -27,6 +28,7 @@ public class Ship implements Serializable {
         this.size = size;
         this.orientation = orientation;
         this.cells = new ArrayList<>();
+        this.lifes = size;
     }
 
     public int getSize() { return size; }
@@ -46,10 +48,11 @@ public class Ship implements Serializable {
      */
 
 
+    public int getLifes() {return lifes; }
     public boolean getAux() { return aux; }
     public void setAux(boolean aux) { this.aux = aux; }
 
     public void registerHit(){
-
+        this.lifes--;
     }
 }
