@@ -4,11 +4,14 @@ import com.example.miniproyecto_3.controller.PlacementController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import com.example.miniproyecto_3.controller.GameController;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class GameStage extends Stage{
     private GameController gameController;
@@ -28,9 +31,8 @@ public class GameStage extends Stage{
         }
         Scene scene = new Scene(root);
         setScene(scene);
-        setTitle("Sopa de letras");
+        setTitle("Battleship");
         setResizable(false);
-        initStyle(StageStyle.UNDECORATED);
         show();
     }
 
@@ -44,11 +46,29 @@ public class GameStage extends Stage{
         } catch (IOException e){
             e.printStackTrace();
         }
+        try {
+            Image icon = new Image(getClass().getResourceAsStream("/images/favicon-16x16.png"));
+            getIcons().add(icon);
+        } catch (Exception e) {
+            System.err.println("Error al cargar el icono: " + e.getMessage());
+        }
+
+        // Carga manual de las fuentes personalizadas
+        InputStream fontStream = getClass().getResourceAsStream("/fonts/PirataOne-Regular.ttf");
+        if (fontStream != null) {
+            System.out.println("¡Fuente encontrada correctamente!");
+        } else {
+            System.out.println("ERROR: No se pudo cargar la fuente");
+        }
+        Font.loadFont(getClass().getResourceAsStream("/fonts/PirataOne-Regular.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/CinzelDecorative-Bold.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/CinzelDecorative-Regular.ttf"), 14);
+
         Scene scene = new Scene(root);
+        scene.getStylesheets().add((getClass().getResource("/css/placement-style.css")).toExternalForm());
         setScene(scene);
-        setTitle("Sopa de letras");
+        setTitle("Battleship");
         setResizable(false);
-        initStyle(StageStyle.UNDECORATED);
         show();
     }
 

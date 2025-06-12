@@ -42,7 +42,6 @@ public class WelcomeStage extends Stage {
         setScene(scene);
         setTitle("Battleship");
         setResizable(false);
-        //initStyle(StageStyle.UNDECORATED);  ¿Por qué esto?
         show();
     }
 

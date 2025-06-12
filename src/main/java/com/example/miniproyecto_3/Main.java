@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import com.example.miniproyecto_3.view.GameStage;
 import java.io.IOException;
 
+
 public class Main extends Application {
 
     public static void main(String[] args) {
@@ -16,6 +17,5 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         WelcomeStage.getInstance();
     }
-
 
 }

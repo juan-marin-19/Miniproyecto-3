@@ -331,19 +331,19 @@ public class PlacementController {
                 if(!rotated){
                     if (version==1){
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-32);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-85);
                     }
                     else if (version==2) {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-39);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-85);
                     }
                     else if (version==3) {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-41);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
                     }
                     else{
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-44);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-100);
                     }
 
 
@@ -352,16 +352,16 @@ public class PlacementController {
                     shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
                     
                     if(version == 1) {
-                        shipVersion.setLayoutY(cellBounds.getMinY() - 25);
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 75);
                     }
                     else if(version==2) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-30);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-80);
                     }
                     else if(version==3) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-35);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
                     }
                     else{
-                        shipVersion.setLayoutY(cellBounds.getMinY()-40);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
                     }
 
                 }
