@@ -4,6 +4,8 @@ import com.example.miniproyecto_3.model.*;
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import com.example.miniproyecto_3.view.Figures;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -33,7 +35,9 @@ public class GameController {
     private Board playerBoard;
     //private Board machineBoard;
     private SeriazableFileHandler seriazableFileHandler;
-    private boolean machineTurn = false;
+   // private boolean machineTurn = false;
+    //BooleanProperty machineTurn = new SimpleBooleanProperty(false);
+
 
 
 
@@ -43,13 +47,17 @@ public class GameController {
 
     public void initialize() {
 
-        this.playerBoard = new Board(10, 10); // Solo si no fue seteado antes
+
+        this.playerBoard = new Board(10, 10);
 
        // this.machineBoard = new Board(10,10);
 
         this.seriazableFileHandler = new SeriazableFileHandler();
 
+
         this.machine = new Machine(0);
+
+
 
        // this.player = new Player("",0);
     }
@@ -113,18 +121,20 @@ public class GameController {
 
         machine.getBoard().printCellGrid();
 
-        // playerBoard.printCellGrid();
+        //playerBoard.printCellGrid();
 
         drawGrids();
         drawShips(playerBoard,playerGrid);
+
+
         handlePlayerShot();
+
 
 
         //drawShips(machine.getBoard(),mainGrid);     // VISUALIZACIÓN TABLERO DEL OPONENTE O MAQUINA COLOCAR UN BOTÓN PARA LA OPCIÓN
 
 
         restoreEnemyGridVisuals();
-
 
 
     }
@@ -209,10 +219,7 @@ public class GameController {
 
 
 
-
     public void handlePlayerShot() {
-
-
 
         for (Node node : mainGrid.getChildren()) {
             if(node instanceof Button){
@@ -223,27 +230,15 @@ public class GameController {
 
                     if(!machine.getBoard().getCell(row,col).isHit()){
                         machine.getBoard().getCell(row,col).hit();
+                       // machineTurn = true;
+                       // machineTurn.set(true);
+                        handleMachineShot();
+                        saveGame();
+
                     }
 
                     //VUELO A ITERAR PARA CAMBIAR EL MAIN GRID ACORDE AL BARCO SUS VIDAS, Y SI HAY O NO UN BARCO.
-                    for(Node n : mainGrid.getChildren()){
-                        if(n instanceof Button){
-                            int row_2 = GridPane.getRowIndex(n)-1;
-                            int col_2 = GridPane.getColumnIndex(n)-1;
-                            if(!machine.getBoard().getCell(row_2,col_2).isOccupied() && machine.getBoard().getCell(row_2,col_2).isHit() ){
-                                n.setStyle("-fx-background-color: red;");
-                            }
-                            if(machine.getBoard().getCell(row_2,col_2).isOccupied() && machine.getBoard().getCell(row_2,col_2).isHit()){
-                                if(machine.getBoard().getCell(row_2,col_2).getShip().getLifes() >0 ){
-                                    n.setStyle("-fx-background-color: lightgreen;");
-                                }
-                                if (machine.getBoard().getCell(row_2,col_2).getShip().getLifes() ==0) {
-                                    n.setStyle("-fx-background-color: green;");
-                                }
-                            }
-                        }
-
-                    }
+                  restoreEnemyGridVisuals();
 
                     node.setDisable(true);
 
@@ -258,6 +253,13 @@ public class GameController {
             }
         }
     }
+
+
+    public void handleMachineShot(){
+
+        System.out.println("machine made a move");
+    }
+
 
 
     /**
@@ -301,6 +303,7 @@ public class GameController {
                 Cell cell = machine.getBoard().getCell(row, col);
 
                 if (cell.isHit()) {
+                    node.setDisable(true);
                     if (!cell.isOccupied()) {
                         node.setStyle("-fx-background-color: red;");
                     } else {
@@ -312,14 +315,14 @@ public class GameController {
                         }
                     }
 
-                    node.setDisable(true);
+
                 }
             }
         }
     }
 
     public void saveGame() {
-        seriazableFileHandler.serialize("player_board.ser", playerBoard);
+     //   seriazableFileHandler.serialize("player_board.ser", playerBoard);
         seriazableFileHandler.serialize("machine_board.ser", machine.getBoard());
         System.out.println("Juego guardado al cerrar la ventana.");
     }
