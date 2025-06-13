@@ -31,17 +31,23 @@ public class Machine implements Serializable {
 
             boolean shot= false;
 
+            int row = -1;
+           int col = -1;
+
             while (!shot) {
 
                 Random random = new Random();
-                int row = random.nextInt(10); // entre 0 y 9
-                int col = random.nextInt(10);
+                row = random.nextInt(10); // entre 0 y 9
+                col = random.nextInt(10);
                 if(!playerBoard.getCell(row,col).isHit()){
                     playerBoard.getCell(row,col).hit();
                     shot=true;
                 }
 
             }
+
+            playerBoard.setLastShotRow(row);
+            playerBoard.setLastShotColumn(col);
 
             return playerBoard;
     }

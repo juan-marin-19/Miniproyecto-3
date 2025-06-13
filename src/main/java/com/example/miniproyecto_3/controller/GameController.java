@@ -4,6 +4,7 @@ import com.example.miniproyecto_3.model.*;
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import com.example.miniproyecto_3.view.Figures;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -15,6 +16,7 @@ import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 public class GameController {
 
@@ -31,10 +33,9 @@ public class GameController {
 
     private Player player;
     private Machine machine;
-    private int sunkenShipsPlayer = 0;
-    private int sunkenShipsMachine = 0;
+    private int sunkenShipsByPlayer = 0;
+    private int sunkenShipsByMachine = 0;
     private Board playerBoard;
-    //private Board machineBoard;
     private SeriazableFileHandler seriazableFileHandler;
     private PlainTextFileReader plainTextFileReader;
 
@@ -42,10 +43,9 @@ public class GameController {
 
 
 
-
-
     public GameController() {
     }
+
 
     public void initialize() {
 
@@ -57,7 +57,6 @@ public class GameController {
 
         this.plainTextFileReader = new PlainTextFileReader();
 
-       // this.player = new Player("",0);
     }
 
 
@@ -113,7 +112,8 @@ public class GameController {
     public void startGame() {
 
         player.setSunkenShips(Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]));
-        System.out.println(player.getSunkenShips());
+        System.out.println("ships sunken by player"+player.getSunkenShips());
+        System.out.println("ships sunken by machine"+Integer.parseInt(plainTextFileReader.readFromFile("machine_data.csv")[1]));
 
         playerBoard = (Board) seriazableFileHandler.deserialize("player_board.ser");
         machine.setBoard((Board) seriazableFileHandler.deserialize("machine_board.ser"));
@@ -219,44 +219,74 @@ public class GameController {
 
 
     public void handlePlayerShot() {
-
         for (Node node : mainGrid.getChildren()) {
-            if(node instanceof Button){
-                int row = GridPane.getRowIndex(node)-1;
-                int col = GridPane.getColumnIndex(node)-1;
+            if (node instanceof Button) {
+                int row = GridPane.getRowIndex(node) - 1;
+                int col = GridPane.getColumnIndex(node) - 1;
                 node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                    Cell targetCell = machine.getBoard().getCell(row, col);
+
+                    if (!targetCell.isHit()) {
+                        targetCell.hit();
+
+                        updateGridVisuals(machine.getBoard(), mainGrid);
+                        updateSunkenShipsCount(machine.getBoard(), false);
 
 
-                    if(!machine.getBoard().getCell(row,col).isHit()){
-                        machine.getBoard().getCell(row,col).hit();
-                        handleMachineShot();
+                        node.setDisable(true);
+
+                        saveGame();
+
+                        //  Aquí analizamos si fue acierto o fallo:
+                        if (!targetCell.isOccupied()) {
+                            // agua pasa el turno a la máquina
+                            handleMachineShot();
+
+                        } else {
+                                //  Tocado o hundido el jugador sigue, NO hacemos nada (no llamamos a handleMachineShot)
+                                System.out.println("¡Tocado o hundido! El jugador sigue.");
+                        }
                     }
-
-                    //VUELO A ITERAR PARA CAMBIAR EL MAIN GRID ACORDE AL BARCO SUS VIDAS, Y SI HAY O NO UN BARCO.
-                    updateGridVisuals(machine.getBoard(),mainGrid);
-                    //ESTE METHOD VERIFICA QUE SI UN BARCO SE HUNDIÓ POR EL PLAYER
-                    updateSunkenShipsCount(machine.getBoard(),false);
-
-                    node.setDisable(true);
 
                     saveGame();
                 });
-
-
             }
         }
     }
 
 
-    public void handleMachineShot(){
 
-        System.out.println("machine made a move");
+    public void handleMachineShot() {
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.5)); // 0.5s entre disparos
 
-        playerBoard = machine.makeMove(playerBoard);
+        pause.setOnFinished(event -> {
+            playerBoard = machine.makeMove(playerBoard);
+            updateGridVisuals(playerBoard, playerGrid);
 
-        updateGridVisuals(playerBoard,playerGrid);
+            int row = playerBoard.getLastShotRow();
+            int col = playerBoard.getLastShotColumn();
+            Cell lastShotCell = playerBoard.getCell(row, col);
+
+            if (lastShotCell.isOccupied()) {
+                System.out.println("Tocado o hundido por barco machine sigue jugando!");
+                System.out.println(row + "," + col);
+
+                updateSunkenShipsCount(playerBoard, true);
+
+                saveGame(); // <--- Guardar después del disparo exitoso
+
+                if (sunkenShipsByMachine < 10) {
+                    pause.playFromStart();
+                }
+            } else {
+             //   System.out.println("Máquina falló en " + row + "," + col + ", ahora le toca al jugador.");
+                saveGame(); // <--- Guardar después de fallar también
+            }
+        });
+
+        pause.play();
+        saveGame();
     }
-
 
 
 
@@ -306,31 +336,82 @@ public class GameController {
                         ship.setAlreadyCounted(true);
                         if (!isPlayerBoard) {
 
-                            sunkenShipsPlayer = Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]);
-                            sunkenShipsPlayer++;
-                            System.out.println("Sunken ships by player: " + sunkenShipsPlayer);
+                            sunkenShipsByPlayer = Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]);
+                            sunkenShipsByPlayer++;
+                            System.out.println("Sunken ships by player: " + sunkenShipsByPlayer);
 
                             // Actualizar archivo plano
                             String[] data = plainTextFileReader.readFromFile("player_data.csv");
 
-                            data[1] = String.valueOf(sunkenShipsPlayer); // actualizamos solo la cantidad
+                            data[1] = String.valueOf(sunkenShipsByPlayer); // actualizamos solo la cantidad
                             String newContent = data[0] + "," + data[1] + "," + "true";
                             plainTextFileReader.writeToFile("player_data.csv", newContent);
 
-
-                            System.out.println(Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]));
                         } else {
-                            sunkenShipsMachine++;
-                            System.out.println("Sunken ships by player: " + sunkenShipsMachine);
+                            // Leer y actualizar archivo de la máquina
+                            sunkenShipsByMachine = Integer.parseInt(plainTextFileReader.readFromFile("machine_data.csv")[1]);
+                            sunkenShipsByMachine++;
+                            System.out.println("Sunken ships by machine: " + sunkenShipsByMachine);
+
+                            String[] data = plainTextFileReader.readFromFile("machine_data.csv");
+
+                            if (data.length >= 2) {
+                                data[1] = String.valueOf(sunkenShipsByMachine);
+                            } else {
+                                // En caso de que esté vacío o mal formateado
+                                data = new String[]{"machine", String.valueOf(sunkenShipsByMachine), "true"};
+                            }
+
+                            String newContent = data[0] + "," + data[1] + "," + data[2];
+                            plainTextFileReader.writeToFile("machine_data.csv", newContent);
                         }
                     }
                 }
             }
         }
+
+        // Verificar si alguien ganó
+        if (sunkenShipsByPlayer == 10) {
+            System.out.println("¡Ganaste!");
+            endGame("¡Ganaste!");
+        } else if (sunkenShipsByMachine == 10) {
+            System.out.println("La máquina ganó...");
+            endGame("La máquina ganó...");
+        }
+
     }
 
 
 
+
+    public void endGame(String message) {
+        // Cambiar el campo de "puede seguir jugando" a false
+        String[] playerData = plainTextFileReader.readFromFile("player_data.csv");
+        if (playerData.length >= 3) {
+            playerData[2] = "false";
+            String newContent = " " + "," + 0 + "," + playerData[2];
+            plainTextFileReader.writeToFile("player_data.csv", newContent);
+        }
+
+        // Desactivar todos los botones del tablero enemigo
+        for (Node node : mainGrid.getChildren()) {
+            if (node instanceof Button) {
+                node.setDisable(true);
+            }
+        }
+
+        // También puedes hacer esto si quieres cerrar la app:
+        // Platform.exit();
+
+        // Mostrar alerta al usuario
+        Platform.runLater(() -> {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            alert.setTitle("Fin del juego");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
 
 
     /**

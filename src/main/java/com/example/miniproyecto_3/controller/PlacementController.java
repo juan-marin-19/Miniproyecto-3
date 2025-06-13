@@ -483,6 +483,10 @@ public class PlacementController {
                 String content = player.getNickname() + "," + player.getSunkenShips() + "," + "true";
                 plainTextFileReader.writeToFile("player_data.csv", content);
 
+                /*Reseteo el num de barcos hundidos de machine_data
+                * */
+                plainTextFileReader.writeToFile("machine_data.csv", "machine"+","+0+ ","+"true" );
+
 
                 //serializo board para poder usarlo en gameController
                 seriazableFileHandler.serialize("player_board.ser",playerBoard);
