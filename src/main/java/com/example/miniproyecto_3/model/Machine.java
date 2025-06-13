@@ -24,15 +24,33 @@ public class Machine implements Serializable {
         return board;
     }
 
-    public void makeMove(Board playerBoard) {
-        // lógica para que la máquina dispare aleatoriamente en el board del jugador
+    /**
+     *  Lógica para que la máquina dispare aleatoriamente en el board del jugador
+     * */
+    public Board makeMove(Board playerBoard) {
+
+            boolean shot= false;
+
+            while (!shot) {
+
+                Random random = new Random();
+                int row = random.nextInt(10); // entre 0 y 9
+                int col = random.nextInt(10);
+                if(!playerBoard.getCell(row,col).isHit()){
+                    playerBoard.getCell(row,col).hit();
+                    shot=true;
+                }
+
+            }
+
+            return playerBoard;
     }
 
     /**
      * Lleno el tablero de los barcos correctos
      * */
     public void fillBoard(){
-        int[] shipLengths = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1}; // Puedes ajustar las longitudes aquí
+        int[] shipLengths = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1}; //ajustar las longitudes aquí
         Random random = new Random();
 
         for (int length : shipLengths) {

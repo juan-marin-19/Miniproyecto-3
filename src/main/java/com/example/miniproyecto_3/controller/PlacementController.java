@@ -479,6 +479,7 @@ public class PlacementController {
                 /*leo el archivo plano y cambio el valor ableToContinue para poder continuar(botón continuar welcomeStage)
              pq significa en este punto ya hay un board para jugar
              */
+
                 String content = player.getNickname() + "," + player.getSunkenShips() + "," + "true";
                 plainTextFileReader.writeToFile("player_data.csv", content);
 

@@ -2,10 +2,9 @@ package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.*;
 
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
+import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import com.example.miniproyecto_3.view.Figures;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -32,11 +31,14 @@ public class GameController {
 
     private Player player;
     private Machine machine;
+    private int sunkenShipsPlayer = 0;
+    private int sunkenShipsMachine = 0;
     private Board playerBoard;
     //private Board machineBoard;
     private SeriazableFileHandler seriazableFileHandler;
-   // private boolean machineTurn = false;
-    //BooleanProperty machineTurn = new SimpleBooleanProperty(false);
+    private PlainTextFileReader plainTextFileReader;
+
+
 
 
 
@@ -47,17 +49,13 @@ public class GameController {
 
     public void initialize() {
 
-
         this.playerBoard = new Board(10, 10);
-
-       // this.machineBoard = new Board(10,10);
 
         this.seriazableFileHandler = new SeriazableFileHandler();
 
-
         this.machine = new Machine(0);
 
-
+        this.plainTextFileReader = new PlainTextFileReader();
 
        // this.player = new Player("",0);
     }
@@ -80,7 +78,7 @@ public class GameController {
 
                 stackPane.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: lightblue;");
 
-                if(shipThere)  stackPane.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: red;");
+                //if(shipThere)  stackPane.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: red;");
 
                 // button.setPrefWidth(10);   // Ancho preferido
                 //  button.setPrefHeight(5);
@@ -90,9 +88,7 @@ public class GameController {
                 //GridPane.setHgrow(button, Priority.ALWAYS);
                 //GridPane.setVgrow(button, Priority.ALWAYS);
                 button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-
                 button.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: lightblue;");
-
 
 
                 playerGrid.add(stackPane, i, j);
@@ -111,30 +107,32 @@ public class GameController {
 
 
     /**
-     * METODO donde se inicia la ventana de juego, se dibuja la pantalla luego de que board se halla puesto una vez se termino
+     *  Se inicia la ventana de juego, se dibuja la pantalla luego de que board se halla puesto una vez se termino
      * de colocar en el placement controller.
      * */
     public void startGame() {
+
+        player.setSunkenShips(Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]));
+        System.out.println(player.getSunkenShips());
 
         playerBoard = (Board) seriazableFileHandler.deserialize("player_board.ser");
         machine.setBoard((Board) seriazableFileHandler.deserialize("machine_board.ser"));
 
         machine.getBoard().printCellGrid();
-
         //playerBoard.printCellGrid();
 
         drawGrids();
         drawShips(playerBoard,playerGrid);
+        //drawShips(machine.getBoard(),mainGrid);     // VISUALIZACIÓN TABLERO DEL OPONENTE O MAQUINA COLOCAR UN BOTÓN PARA LA OPCIÓN
 
 
         handlePlayerShot();
 
-
-
-        //drawShips(machine.getBoard(),mainGrid);     // VISUALIZACIÓN TABLERO DEL OPONENTE O MAQUINA COLOCAR UN BOTÓN PARA LA OPCIÓN
-
-
-        restoreEnemyGridVisuals();
+        //RESET GRIDS CONTINUE
+        updateGridVisuals(machine.getBoard(),mainGrid);
+        updateGridVisuals(playerBoard,playerGrid);
+        resetAuxFlags(playerBoard); // aux para la visualización del tablero
+        //resetAuxFlags(machine.getBoard());         // VISUALIZACIÓN TABLERO DEL OPONENTE PROFESOR
 
 
     }
@@ -219,6 +217,7 @@ public class GameController {
 
 
 
+
     public void handlePlayerShot() {
 
         for (Node node : mainGrid.getChildren()) {
@@ -230,24 +229,18 @@ public class GameController {
 
                     if(!machine.getBoard().getCell(row,col).isHit()){
                         machine.getBoard().getCell(row,col).hit();
-                       // machineTurn = true;
-                       // machineTurn.set(true);
                         handleMachineShot();
-                        saveGame();
-
                     }
 
                     //VUELO A ITERAR PARA CAMBIAR EL MAIN GRID ACORDE AL BARCO SUS VIDAS, Y SI HAY O NO UN BARCO.
-                  restoreEnemyGridVisuals();
+                    updateGridVisuals(machine.getBoard(),mainGrid);
+                    //ESTE METHOD VERIFICA QUE SI UN BARCO SE HUNDIÓ POR EL PLAYER
+                    updateSunkenShipsCount(machine.getBoard(),false);
 
                     node.setDisable(true);
 
-
-
-
+                    saveGame();
                 });
-
-
 
 
             }
@@ -258,8 +251,112 @@ public class GameController {
     public void handleMachineShot(){
 
         System.out.println("machine made a move");
+
+        playerBoard = machine.makeMove(playerBoard);
+
+        updateGridVisuals(playerBoard,playerGrid);
     }
 
+
+
+
+
+    public void updateGridVisuals(Board board, GridPane gridPane) {
+        for (Node node : gridPane.getChildren()) {
+            if (node instanceof Button || node instanceof StackPane) {
+                int row = GridPane.getRowIndex(node) - 1;
+                int col = GridPane.getColumnIndex(node) - 1;
+
+                Cell cell = board.getCell(row, col);
+
+                if (cell.isHit()) {
+                    node.setDisable(true);
+                    if (!cell.isOccupied()) {
+                        node.setStyle("-fx-background-color: red;");
+                    } else {
+                        Ship ship = cell.getShip();
+
+                        if (ship.getLifes() > 0) {
+                            node.setStyle("-fx-background-color: lightgreen;");
+                        } else {
+                            node.setStyle("-fx-background-color: green;");
+
+                        }
+                    }
+
+
+                }
+            }
+        }
+    }
+
+
+
+
+    /**
+     * Sí un barco se hundió actualizo la cantidad de barcos hundidos por player y por machine
+     * */
+    public void updateSunkenShipsCount(Board board, boolean isPlayerBoard) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Cell cell = board.getCell(i, j);
+                if (cell.isHit() && cell.isOccupied()) {
+                    Ship ship = cell.getShip();
+                    if (ship.getLifes() == 0 && !ship.isAlreadyCounted()) {
+                        ship.setAlreadyCounted(true);
+                        if (!isPlayerBoard) {
+
+                            sunkenShipsPlayer = Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]);
+                            sunkenShipsPlayer++;
+                            System.out.println("Sunken ships by player: " + sunkenShipsPlayer);
+
+                            // Actualizar archivo plano
+                            String[] data = plainTextFileReader.readFromFile("player_data.csv");
+
+                            data[1] = String.valueOf(sunkenShipsPlayer); // actualizamos solo la cantidad
+                            String newContent = data[0] + "," + data[1] + "," + "true";
+                            plainTextFileReader.writeToFile("player_data.csv", newContent);
+
+
+                            System.out.println(Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]));
+                        } else {
+                            sunkenShipsMachine++;
+                            System.out.println("Sunken ships by player: " + sunkenShipsMachine);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+    /**
+     *  Reset aux después de que se colocaron visualmente los barcos
+     * */
+    public void resetAuxFlags(Board board) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Ship ship = board.getCell(i, j).getShip();
+                if (ship != null) {
+                    ship.setAux(false);
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * Serializo los tableros después de un cambio.
+     * */
+    public void saveGame() {
+        seriazableFileHandler.serialize("player_board.ser", playerBoard);
+        seriazableFileHandler.serialize("machine_board.ser", machine.getBoard());
+        //System.out.println("Juego guardado al cerrar la ventana.");
+    }
 
 
     /**
@@ -268,7 +365,6 @@ public class GameController {
      * */
     public void setPlayer(Player player) {
         this.player = player;
-        System.out.println(player.getSunkenShips());
         System.out.println(player.getNickname());
     }
 
@@ -294,38 +390,6 @@ public class GameController {
     }
 
 
-    public void restoreEnemyGridVisuals() {
-        for (Node node : mainGrid.getChildren()) {
-            if (node instanceof Button) {
-                int row = GridPane.getRowIndex(node) - 1;
-                int col = GridPane.getColumnIndex(node) - 1;
-
-                Cell cell = machine.getBoard().getCell(row, col);
-
-                if (cell.isHit()) {
-                    node.setDisable(true);
-                    if (!cell.isOccupied()) {
-                        node.setStyle("-fx-background-color: red;");
-                    } else {
-                        Ship ship = cell.getShip();
-                        if (ship.getLifes() > 0) {
-                            node.setStyle("-fx-background-color: lightgreen;");
-                        } else {
-                            node.setStyle("-fx-background-color: green;");
-                        }
-                    }
-
-
-                }
-            }
-        }
-    }
-
-    public void saveGame() {
-     //   seriazableFileHandler.serialize("player_board.ser", playerBoard);
-        seriazableFileHandler.serialize("machine_board.ser", machine.getBoard());
-        System.out.println("Juego guardado al cerrar la ventana.");
-    }
 
 
 }
