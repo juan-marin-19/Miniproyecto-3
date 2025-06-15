@@ -13,6 +13,8 @@ public class Board implements Serializable {
     private int rows;
     private int cols;
     private boolean[][] occupied;
+    private int lastShotRow;
+    private int lastShotColumn;
 
     private List<Ship> ships;
 
@@ -128,6 +130,12 @@ public class Board implements Serializable {
     public Cell getCell(int row, int col) {
         return cellGrid[row][col];
     }
+
+    public void setLastShotRow(int lastShotRow) {this.lastShotRow = lastShotRow;}
+    public void setLastShotColumn(int lastShotColumn) {this.lastShotColumn = lastShotColumn;}
+
+    public int getLastShotRow(){return lastShotRow;}
+    public int getLastShotColumn(){return lastShotColumn;}
 
     public Cell[][] getGrid() {
         return  cellGrid;

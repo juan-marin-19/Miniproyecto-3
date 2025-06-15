@@ -72,7 +72,7 @@ public class PlacementController {
                     rotated = true;
                     for (Node node : playerGrid.getChildren()) {
                         if (node instanceof StackPane) {
-                            node.setStyle("-fx-border-color: black; -fx-background-color: white;");
+                            node.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
                         }
                     }
                 } else {
@@ -80,7 +80,7 @@ public class PlacementController {
                     rotated = false;
                     for (Node node : playerGrid.getChildren()) {
                         if (node instanceof StackPane) {
-                            node.setStyle("-fx-border-color: black; -fx-background-color: white;");
+                            node.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
                         }
                     }
                 }
@@ -91,16 +91,17 @@ public class PlacementController {
 
         // creo las figuras y las añado a una lista de figuras para poder quitarlas luego
         // version 1 = fragata, 2= destructor
-        Group fragata1 = Figures.Fragata(Color.LIGHTBLUE, Color.BLACK);
-        Group fragata2 = Figures.Fragata(Color.LIGHTBLUE, Color.BLACK);
-        Group fragata3 = Figures.Fragata(Color.LIGHTBLUE, Color.BLACK);
-        Group fragata4 = Figures.Fragata(Color.LIGHTBLUE, Color.BLACK);
-        Group destructor1 = Figures.Destructor(Color.LIGHTBLUE, Color.BLACK);
-        Group destructor2 = Figures.Destructor(Color.LIGHTBLUE, Color.BLACK);
-        Group destructor3 = Figures.Destructor(Color.LIGHTBLUE, Color.BLACK);
-        Group submarine1 = Figures.Submarine(Color.LIGHTBLUE, Color.BLACK);
-        Group submarine2 = Figures.Submarine(Color.LIGHTBLUE, Color.BLACK);
-        Group portaaviones = Figures.Portaaviones(Color.LIGHTBLUE, Color.BLACK);
+
+        Group fragata1 = Figures.Fragata(Color.GRAY, Color.BLACK);
+        Group fragata2 = Figures.Fragata(Color.GRAY, Color.BLACK);
+        Group fragata3 = Figures.Fragata(Color.GRAY, Color.BLACK);
+        Group fragata4 = Figures.Fragata(Color.GRAY, Color.BLACK);
+        Group destructor1 = Figures.Destructor(Color.GRAY, Color.BLACK);
+        Group destructor2 = Figures.Destructor(Color.GRAY, Color.BLACK);
+        Group destructor3 = Figures.Destructor(Color.GRAY, Color.BLACK);
+        Group submarine1 = Figures.Submarine(Color.GRAY, Color.BLACK);
+        Group submarine2 = Figures.Submarine(Color.GRAY, Color.BLACK);
+        Group portaaviones = Figures.Portaaviones(Color.GRAY, Color.BLACK);
 
         //Rectangle rect = new Rectangle(0, 0, 42, 183);
        // Group rectGroup = new Group(rect);
@@ -137,7 +138,7 @@ public class PlacementController {
         shipPalette.getChildren().add(shipVersion);
 
 
-        // Guardamos la posición original para poder "volver" si es necesario
+        // Guardamos la posición original para poder solo colorear las celdas del barco
         final List<StackPane> previouslyHighlighted = new ArrayList<>();
 
 
@@ -173,7 +174,7 @@ public class PlacementController {
             // Obtener el centro del barco en coordenadas de escena
             Bounds shipBounds = shipVersion.localToScene(shipVersion.getBoundsInLocal());
 
-            //Encontramos la orientación actual del barco
+            //Encontramos la orientación actual del barco(cambiar por rotated)
             boolean isVertical = !(Math.abs(shipVersion.getRotate() % 180) == 90);
 
 
@@ -216,9 +217,9 @@ public class PlacementController {
 
             // Limpiar celdas anteriores
             for (StackPane cell : previouslyHighlighted) {
-                cell.setStyle("-fx-border-color: black; -fx-background-color: white;");
+                cell.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
             }
-            previouslyHighlighted.clear();
+             previouslyHighlighted.clear();
 
 
             double referencePointX;
@@ -269,8 +270,8 @@ public class PlacementController {
                         Integer row = GridPane.getRowIndex(node);
 
                         // Evitar null (puede pasar en celdas sin set explícito)
-                        if (col == null) col = 0;
-                        if (row == null) row = 0;
+                        if (col == null) col = (Integer) 0;
+                        if (row == null) row =  (Integer) 0;
 
                         // Obtener coordenadas desde el modelo de los cuadros que ocupan el barco (se guardan en un array 2d de int)
                         List<int[]> shipCoords = playerBoard.getCoordinatesForShip(row, col, version, isVertical);
@@ -289,7 +290,7 @@ public class PlacementController {
                                         Integer nc = GridPane.getColumnIndex(n);
                                         Integer nr = GridPane.getRowIndex(n);
                                         if (nc != null && nr != null && nc == c && nr == r) {
-                                            n.setStyle("-fx-border-color: black; -fx-background-color: lightgreen;");
+                                            n.setStyle("-fx-border-color: black; -fx-background-color: red;");
                                             previouslyHighlighted.add((StackPane) n);
                                         }
                                     }
@@ -304,6 +305,7 @@ public class PlacementController {
             }
 
             event.consume();
+
         });
 
 
@@ -333,19 +335,19 @@ public class PlacementController {
                 if(!rotated){
                     if (version==1){
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-32);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-85);
                     }
                     else if (version==2) {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-39);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-85);
                     }
                     else if (version==3) {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-41);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
                     }
                     else{
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-44);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-100);
                     }
 
 
@@ -354,16 +356,16 @@ public class PlacementController {
                     shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
                     
                     if(version == 1) {
-                        shipVersion.setLayoutY(cellBounds.getMinY() - 25);
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 75);
                     }
                     else if(version==2) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-30);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-80);
                     }
                     else if(version==3) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-35);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
                     }
                     else{
-                        shipVersion.setLayoutY(cellBounds.getMinY()-40);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
                     }
 
                 }
@@ -406,6 +408,12 @@ public class PlacementController {
                 rotated = false;
             }
 
+            for(Node n: playerGrid.getChildren()){
+                if(n instanceof StackPane){
+                    n.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: lightblue;");
+
+                }
+            }
 
         });
 
@@ -422,7 +430,7 @@ public class PlacementController {
                 // agrega un stackPane para poder superponer los barcos
                 StackPane cell = new StackPane();
                 cell.setPrefSize(100, 100);
-                cell.setStyle("-fx-border-color: black; -fx-background-color: white;");
+                cell.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: lightblue;");
 
                 playerGrid.add(cell, i, j);
 
@@ -462,13 +470,6 @@ public class PlacementController {
     public void handleClickContinue(javafx.event.ActionEvent event){
         if(numShipsPlaced==10){
 
-
-            // Aquí ya se colocaron los barcos
-            Board boardListo = playerBoard; // o como tengas el board final
-            Player player = this.player; // el jugador
-            seriazableFileHandler.serialize("board_data.ser", boardListo); //serializa el tablero, esto va antes de crear el gamestage
-
-
             GameStage gameStage = new GameStage();
             gameStage.GameStage1(); // Esto carga el tablero de juego
 
@@ -479,18 +480,26 @@ public class PlacementController {
                 /*leo el archivo plano y cambio el valor ableToContinue para poder continuar(botón continuar welcomeStage)
              pq significa en este punto ya hay un board para jugar
              */
+
                 String content = player.getNickname() + "," + player.getSunkenShips() + "," + "true";
                 plainTextFileReader.writeToFile("player_data.csv", content);
 
+                /*Reseteo el num de barcos hundidos de machine_data
+                * */
+                plainTextFileReader.writeToFile("machine_data.csv", "machine"+","+0+ ","+"true" );
+
 
                 //serializo board para poder usarlo en gameController
-                seriazableFileHandler.serialize("player_board.ser",boardListo);
+                seriazableFileHandler.serialize("player_board.ser",playerBoard);
 
+                Machine machine = new Machine(0);
+                machine.fillBoard(); // llenar aleatoriamente su board
+                seriazableFileHandler.serialize("machine_board.ser", machine.getBoard()); // o solo machine.getBoard()
 
-                controller.startGame();
                 controller.setPlayer(player);
+                controller.startGame();
 
-                System.out.println("Board enviado al controlador de juego");
+
             } else {
                 System.err.println("GameController es null");
             }

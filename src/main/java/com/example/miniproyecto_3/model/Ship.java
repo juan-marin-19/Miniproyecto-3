@@ -19,7 +19,9 @@ public class Ship implements Serializable {
      * */
     private boolean orientation;
     private int size;
-    private boolean aux;
+    private boolean aux;//auxiliar para colocar los barcos visualmente en gameController ( colocado o no)
+    private int lifes;
+    private boolean alreadyCounted = false;
 
     private List<Cell> cells; // donde está el barco
 
@@ -27,6 +29,7 @@ public class Ship implements Serializable {
         this.size = size;
         this.orientation = orientation;
         this.cells = new ArrayList<>();
+        this.lifes = size;
     }
 
     public int getSize() { return size; }
@@ -46,10 +49,24 @@ public class Ship implements Serializable {
      */
 
 
+    public int getLifes() {return lifes; }
+
     public boolean getAux() { return aux; }
+
     public void setAux(boolean aux) { this.aux = aux; }
 
     public void registerHit(){
-
+        this.lifes--;
     }
+
+    public boolean isAlreadyCounted() {
+        return alreadyCounted;
+    }
+
+    public void setAlreadyCounted(boolean alreadyCounted) {
+        this.alreadyCounted = alreadyCounted;
+    }
+
+
+
 }

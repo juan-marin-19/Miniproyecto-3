@@ -1,0 +1,126 @@
+/* Estilos generales */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #ffffff, #ffffff); /* Azul oscuro a más claro */
+    -fx-font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    -fx-background-image: url("../images/background_2_final.png");
+    -fx-background-size: 970 995; /* Ajusta el tamaño para cubrir todo el área */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center; /* Centra la imagen */
+}
+
+/* Declaración de fuentes personalizadas */
+@font-face {
+    font-family: 'PirataOne';
+    src: url("../fonts/PirataOne-Regular.ttf");
+}
+@font-face {
+    font-family: 'CinzelBold';
+    src: url("../fonts/CinzelDecorative-Bold.ttf");
+}
+@font-face {
+    font-family: 'CinzelRegular';
+    src: url("../fonts/CinzelDecorative-Regular.ttf");
+}
+
+/* Estilo específico para la etiqueta del título principal */
+/* Asegúrate que el texto del FXML para este Label sea 'BATTLESHIP' o lo que desees. */
+#titleLabel {
+    -fx-font-family: "sans-serif";
+    -fx-font-weight: bold;
+    -fx-font-size: 60px; /* Tamaño más grande para impacto */
+    -fx-text-fill: #FFD700; /* Dorado para el título */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 15, 0.6, 0, 2); /* Sombra más pronunciada */
+    -fx-alignment: CENTER;
+    -fx-padding: 5px 0; /* Padding vertical, sin padding horizontal innecesario */
+    /* Si el root ya tiene una imagen de fondo, este label no necesita una propia a menos que sea un logo */
+    /* -fx-background-image: url("../images/battleship_logo_text.png"); /* Ejemplo si el título es una imagen */
+    /* -fx-background-size: contain; */
+    /* -fx-background-repeat: no-repeat; */
+    /* -fx-background-position: center; */
+}
+
+/* Estilo para la etiqueta 'COLOCA LOS BARCOS' */
+#colocaLabel {
+    -fx-font-family: "PirataOne"; /* Mantener la fuente para coherencia con el título */
+    -fx-font-size: 24px; /* Un poco más grande para destacarse como subtítulo */
+    -fx-text-fill: #FFFFFF; /* Blanco puro */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0.5, 0, 1);
+    -fx-alignment: CENTER; /* Asegura que el texto esté centrado en el label */
+}
+
+#colocaLabel1 {
+    -fx-font-family: "P"; /* Mantener la fuente para coherencia con el título */
+    -fx-font-size: 32px; /* Un poco más grande para destacarse como subtítulo */
+    -fx-text-fill: #FFFFFF; /* Blanco puro */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0.5, 0, 1);
+    -fx-alignment: CENTER; /* Asegura que el texto esté centrado en el label */
+}
+
+/* Estilo para la etiqueta de instrucciones */
+#instructionLabel {
+    -fx-font-family: "CinzelRegular";
+    -fx-text-fill: #e0eff4; /* Azul claro para contraste y legibilidad */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 5, 0, 1, 1); /* Sombra más suave */
+    -fx-wrap-text: true;
+    -fx-font-size: 16px; /* Ajuste de tamaño para mejor legibilidad */
+    -fx-alignment: CENTER; /* Centrar el texto dentro del label */
+    -fx-padding: 5px; /* Pequeño padding interno */
+}
+
+/* Estilo para la paleta de barcos */
+#shipPalette {
+    -fx-background-color: rgba(0, 0, 0, 0.2); /* Fondo más oscuro y semitransparente */
+    -fx-border-color: #7b9ed9; /* Un azul más claro para el borde */
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px; /* Bordes más redondeados */
+    -fx-padding: 20px; /* Más padding para los barcos */
+    -fx-hgap: 15px; /* Mayor espacio horizontal entre barcos */
+    -fx-vgap: 15px; /* Mayor espacio vertical entre barcos */
+}
+
+/* Estilo para el grid del jugador */
+#playerGrid {
+    -fx-background-color: rgba(255, 255, 255, 0.05); /* Muy ligeramente blanco, casi transparente */
+    -fx-border-color: #7b9ed9; /* Borde más claro */
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px; /* Bordes más redondeados */
+}
+
+/* Estilo para las celdas del grid */
+/* Asume que las celdas son StackPanes */
+#playerGrid .stack-pane {
+    -fx-background-color: rgba(0, 70, 128, 0.4); /* Un azul más apropiado para las celdas */
+    -fx-border-color: rgba(255, 255, 255, 0.3); /* Bordes más sutiles */
+    -fx-border-width: 0.5px; /* Bordes más finos */
+    -fx-cursor: hand;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 0); /* Ligera sombra interna para profundidad */
+}
+
+/* Efecto hover para las celdas del grid */
+#playerGrid .stack-pane:hover {
+    -fx-background-color: rgba(0, 100, 180, 0.6); /* Color de hover más vibrante */
+    -fx-border-color: rgba(255, 255, 255, 0.8);
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 5, 0, 0, 0); /* Resaltar con sombra blanca */
+}
+
+/* Estilo para el botón de jugar */
+.boton-jugar {
+    -fx-background-color: #32CD32; /* Un verde lima más llamativo pero no tan chillón */
+    -fx-text-fill: white;
+    -fx-font-size: 18px; /* Texto más grande */
+    -fx-font-weight: bold;
+    -fx-padding: 12px 27px; /* Más padding para un botón más grande */
+    -fx-background-radius: 8px; /* Bordes más redondeados */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2); /* Sombra más pronunciada */
+    -fx-cursor: hand;
+    -fx-font-family: "CinzelBold"; /* Usa una fuente de títulos para el botón */
+}
+
+.boton-jugar:hover {
+    -fx-background-color: #2E8B57; /* Verde más oscuro al pasar el ratón */
+}
+
+.boton-jugar:pressed {
+    -fx-background-color: #228B22; /* Verde aún más oscuro al presionar */
+    -fx-translate-y: 2px; /* Mayor desplazamiento al presionar */
+}
