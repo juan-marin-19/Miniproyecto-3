@@ -13,9 +13,9 @@ public class Figures {
     public static Group crearEquis(Color color, double grosor) {
         Path equis = new Path(
                 new MoveTo(0, 0),
-                new LineTo(100, 100),
-                new MoveTo(0, 100),
-                new LineTo(100, 0)
+                new LineTo(40, 40),
+                new MoveTo(0, 40),
+                new LineTo(40, 0)
         );
         equis.setStroke(color);
         equis.setStrokeWidth(grosor);

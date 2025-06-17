@@ -16,7 +16,11 @@ import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameController {
 
@@ -302,6 +306,8 @@ public class GameController {
 
 
     public void updateGridVisuals(Board board, GridPane gridPane) {
+        //List<Node> nodesToAdd = new ArrayList<>();
+        //List<Node> nodesToRemove = new ArrayList<>();
         for (Node node : gridPane.getChildren()) {
             if (node instanceof Button || node instanceof StackPane) {
                 int row = GridPane.getRowIndex(node) - 1;
@@ -312,7 +318,19 @@ public class GameController {
                 if (cell.isHit()) {
                     node.setDisable(true);
                     if (!cell.isOccupied()) {
-                        node.setStyle("-fx-background-color: red;");
+                        node.setStyle("-fx-background-color: salmon;");
+                        Group mark = Figures.crearEquis(Color.RED, 2);
+                        if(node instanceof StackPane){
+                            ((StackPane) node).getChildren().add(mark);
+                        }/*else if (node instanceof Button){
+                            StackPane stack = new StackPane();
+                            stack.getChildren().addAll(node, mark);
+                            GridPane.setRowIndex(stack, row + 1);
+                            GridPane.setColumnIndex(stack, col + 1);
+                            nodesToAdd.add(stack);
+                            nodesToRemove.add(node);
+                        }*/
+
                     } else {
                         Ship ship = cell.getShip();
 
@@ -328,6 +346,8 @@ public class GameController {
                 }
             }
         }
+        //gridPane.getChildren().removeAll(nodesToRemove);
+        //gridPane.getChildren().addAll(nodesToAdd);
     }
 
 
