@@ -29,6 +29,9 @@ public class GameController {
     @FXML
     private AnchorPane playerAnchorPane;
 
+    @FXML
+    private Button cheatButton;
+
 
 
     private Player player;
@@ -125,7 +128,7 @@ public class GameController {
         //playerBoard.printCellGrid();
 
         drawGrids();
-        drawShips(playerBoard,playerGrid);
+        drawShips(playerBoard,playerGrid, false); //----------------------------------
         //drawShips(machine.getBoard(),mainGrid);     // VISUALIZACIÓN TABLERO DEL OPONENTE O MAQUINA COLOCAR UN BOTÓN PARA LA OPCIÓN
 
 
@@ -135,7 +138,7 @@ public class GameController {
         updateGridVisuals(machine.getBoard(),mainGrid);
         updateGridVisuals(playerBoard,playerGrid);
         resetAuxFlags(playerBoard); // aux para la visualización del tablero
-        //resetAuxFlags(machine.getBoard());         // VISUALIZACIÓN TABLERO DEL OPONENTE PROFESOR
+        resetAuxFlags(machine.getBoard());         // VISUALIZACIÓN TABLERO DEL OPONENTE PROFESOR
 
 
     }
@@ -143,7 +146,7 @@ public class GameController {
     /**
      * Coloco los barcos usando la primera celda de estos (PODRÍA USAR HERENCIA CÓDIGO SIMILAR MOUSE SET RELEASED)
      * */
-    public void drawShips(Board board, GridPane gridPane) {
+    public void drawShips(Board board, GridPane gridPane, boolean cheatMode) {
 
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
@@ -159,6 +162,10 @@ public class GameController {
 
                     shipGroup.setScaleX(0.78);
                     shipGroup.setScaleY(0.78);
+
+                    if(cheatMode){
+                        shipGroup.setId("enemyShip");
+                    }
 
 
                     Platform.runLater(() -> {
@@ -471,6 +478,17 @@ public class GameController {
         }
         return null; // not found
 
+    }
+
+    @FXML
+    private void cheatButtonPressed(){
+        resetAuxFlags(machine.getBoard());
+        drawShips(machine.getBoard(), mainGrid,true);
+    }
+
+    @FXML
+    private void cheatButtonReleased(){
+        playerAnchorPane.getChildren().removeIf(node -> "enemyShip".equals(node.getId()));
     }
 
 
