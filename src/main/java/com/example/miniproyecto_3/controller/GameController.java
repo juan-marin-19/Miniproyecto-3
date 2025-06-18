@@ -8,9 +8,12 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
@@ -45,6 +48,9 @@ public class GameController {
     private Board playerBoard;
     private SeriazableFileHandler seriazableFileHandler;
     private PlainTextFileReader plainTextFileReader;
+    private final Image missImage = new Image(getClass().getResourceAsStream("/images/x.png"));
+    private final Image hitImage = new Image(getClass().getResourceAsStream("/images/explosión.png"));
+    private final Image sunkenShipImage = new Image(getClass().getResourceAsStream("/images/smoke.png"));
 
 
 
@@ -137,13 +143,27 @@ public class GameController {
 
 
         handlePlayerShot();
+        //solución para renderizado inicial correct
+        Platform.runLater(() -> {
+            PauseTransition initialDelay = new PauseTransition(Duration.millis(100));
+            initialDelay.setOnFinished(e -> {
+                //RESET GRIDS CONTINUE
+                updateGridVisuals(machine.getBoard(),mainGrid);
+                updateGridVisuals(playerBoard,playerGrid);
+                //forzar actualizacion de layout
+                mainGrid.requestLayout();
+                playerGrid.requestLayout();
 
-        //RESET GRIDS CONTINUE
-        updateGridVisuals(machine.getBoard(),mainGrid);
-        updateGridVisuals(playerBoard,playerGrid);
-        resetAuxFlags(playerBoard); // aux para la visualización del tablero
-        resetAuxFlags(machine.getBoard());         // VISUALIZACIÓN TABLERO DEL OPONENTE PROFESOR
-
+                PauseTransition cleanupDelay = new PauseTransition(Duration.millis(50));
+                cleanupDelay.setOnFinished(ev -> {
+                    resetAuxFlags(playerBoard); // aux para la visualización del tablero
+                    resetAuxFlags(machine.getBoard());         // VISUALIZACIÓN TABLERO DEL OPONENTE PROFESOR
+                    System.out.println("Visualizacion inicial completada");
+                });
+                cleanupDelay.play();
+            });
+            initialDelay.play();
+        });
 
     }
 
@@ -306,8 +326,13 @@ public class GameController {
 
 
     public void updateGridVisuals(Board board, GridPane gridPane) {
-        //List<Node> nodesToAdd = new ArrayList<>();
-        //List<Node> nodesToRemove = new ArrayList<>();
+        playerAnchorPane.getChildren().removeIf(node -> {
+            if(node instanceof  ImageView){
+                Object gridPaneProperty = node.getProperties().get("associatedGrid");
+                return gridPaneProperty != null && gridPaneProperty.equals(gridPane);
+            }
+            return false;
+        });
         for (Node node : gridPane.getChildren()) {
             if (node instanceof Button || node instanceof StackPane) {
                 int row = GridPane.getRowIndex(node) - 1;
@@ -317,32 +342,30 @@ public class GameController {
 
                 if (cell.isHit()) {
                     node.setDisable(true);
+                    Bounds cellBounds = node.localToScene(node.getBoundsInLocal());
+                    Point2D anchorPoint = playerAnchorPane.sceneToLocal(cellBounds.getMinX(), cellBounds.getMinY());
+                    ImageView imageView = new ImageView();
+                    imageView.setFitWidth(40);
+                    imageView.setFitHeight(40);
                     if (!cell.isOccupied()) {
                         node.setStyle("-fx-background-color: salmon;");
-                        Group mark = Figures.crearEquis(Color.RED, 2);
-                        if(node instanceof StackPane){
-                            ((StackPane) node).getChildren().add(mark);
-                        }/*else if (node instanceof Button){
-                            StackPane stack = new StackPane();
-                            stack.getChildren().addAll(node, mark);
-                            GridPane.setRowIndex(stack, row + 1);
-                            GridPane.setColumnIndex(stack, col + 1);
-                            nodesToAdd.add(stack);
-                            nodesToRemove.add(node);
-                        }*/
+                        imageView.setImage(missImage);
 
                     } else {
                         Ship ship = cell.getShip();
-
                         if (ship.getLifes() > 0) {
                             node.setStyle("-fx-background-color: lightgreen;");
+                            imageView.setImage(hitImage);
                         } else {
                             node.setStyle("-fx-background-color: green;");
+                            imageView.setImage(sunkenShipImage);
 
                         }
                     }
-
-
+                    imageView.setLayoutX(anchorPoint.getX() + (cellBounds.getWidth()-40)/2);
+                    imageView.setLayoutY(anchorPoint.getY() + (cellBounds.getHeight() - 40)/2);
+                    imageView.getProperties().put("associatedGrid",gridPane);
+                    playerAnchorPane.getChildren().add(imageView);
                 }
             }
         }
