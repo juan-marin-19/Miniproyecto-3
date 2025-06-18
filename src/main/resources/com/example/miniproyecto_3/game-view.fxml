@@ -75,7 +75,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                      </rowConstraints>
                   </GridPane>
-                  <Button fx:id="cheatButton" layoutX="705.0" layoutY="14.0" mnemonicParsing="false" onMousePressed="#cheatButtonPressed" onMouseReleased="#cheatButtonReleased" text="MOSTRAR TABLERO" />
+                  <Button fx:id="cheatButton" layoutX="705.0" layoutY="517.0" mnemonicParsing="false" onMousePressed="#cheatButtonPressed" onMouseReleased="#cheatButtonReleased" text="MOSTRAR TABLERO" />
                </children>
             </AnchorPane>
          </children>

@@ -18,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
@@ -332,7 +333,7 @@ public class GameController {
     public void updateGridVisuals(Board board, GridPane gridPane) {
         //elimina los imagenes que esten asociadas al gridpane, para evitar elementos duplicados
         playerAnchorPane.getChildren().removeIf(node -> {
-            if(node instanceof  ImageView){
+            if(node instanceof  Group){
                 Object gridPaneProperty = node.getProperties().get("associatedGrid");
                 return gridPaneProperty != null && gridPaneProperty.equals(gridPane);
             }
@@ -354,6 +355,10 @@ public class GameController {
                     ImageView imageView = new ImageView();
                     imageView.setFitWidth(40);
                     imageView.setFitHeight(40);
+                    //se crea el rectangulo que va a contener la imagen
+                    Rectangle rectangle = new Rectangle(40,40);
+                    rectangle.setFill(Color.TRANSPARENT);
+                    rectangle.setStroke(Color.TRANSPARENT);
                     //se asigna la imagen correcta
                     if (!cell.isOccupied()) {
                         node.setStyle("-fx-background-color: salmon;");
@@ -370,13 +375,15 @@ public class GameController {
 
                         }
                     }
-                    //posicionamiento preciso
-                    imageView.setLayoutX(anchorPoint.getX() + (cellBounds.getWidth()-40)/2);
-                    imageView.setLayoutY(anchorPoint.getY() + (cellBounds.getHeight() - 40)/2);
-                    //se marca la imagen como perteneciente al gridpane actual, usando los propiedades arbitrarias en los nodos
-                    imageView.getProperties().put("associatedGrid",gridPane);
-                    //se añade la imagen al anchorpane
-                    playerAnchorPane.getChildren().add(imageView);
+                    //se agrupa la imagen con el rectangulo
+                    Group graphicContainer = new Group(rectangle, imageView);
+                    //posicionamiento
+                    graphicContainer.setLayoutX(anchorPoint.getX() + (cellBounds.getWidth()-40)/2);
+                    graphicContainer.setLayoutY(anchorPoint.getY() + (cellBounds.getHeight() - 40)/2);
+                    //se marca el group como perteneciente al gridpane actual, usando los propiedades arbitrarias en los nodos
+                    graphicContainer.getProperties().put("associatedGrid",gridPane);
+                    //se añade el group al anchorpane
+                    playerAnchorPane.getChildren().add(graphicContainer);
                 }
             }
         }
