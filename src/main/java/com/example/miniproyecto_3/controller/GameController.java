@@ -48,6 +48,7 @@ public class GameController {
     private Board playerBoard;
     private SeriazableFileHandler seriazableFileHandler;
     private PlainTextFileReader plainTextFileReader;
+    //imagenes que representan los resultados del disparo.
     private final Image missImage = new Image(getClass().getResourceAsStream("/images/x.png"));
     private final Image hitImage = new Image(getClass().getResourceAsStream("/images/explosión.png"));
     private final Image sunkenShipImage = new Image(getClass().getResourceAsStream("/images/smoke.png"));
@@ -138,12 +139,12 @@ public class GameController {
         //playerBoard.printCellGrid();
 
         drawGrids();
-        drawShips(playerBoard,playerGrid, false); //----------------------------------
+        drawShips(playerBoard,playerGrid, false);
         //drawShips(machine.getBoard(),mainGrid);     // VISUALIZACIÓN TABLERO DEL OPONENTE O MAQUINA COLOCAR UN BOTÓN PARA LA OPCIÓN
 
 
         handlePlayerShot();
-        //solución para renderizado inicial correct
+        //solución para renderizado inicial correcto, evita que no se ven los elementos visuales al abrir la ventana de juego
         Platform.runLater(() -> {
             PauseTransition initialDelay = new PauseTransition(Duration.millis(100));
             initialDelay.setOnFinished(e -> {
@@ -188,7 +189,7 @@ public class GameController {
                     shipGroup.setScaleY(0.78);
 
                     if(cheatMode){
-                        shipGroup.setId("enemyShip");
+                        shipGroup.setId("enemyShip"); //Indentificador para los barcos enemigos
                     }
 
 
@@ -323,9 +324,13 @@ public class GameController {
     }
 
 
-
+    /*
+    se actualizan los elementos visuales del gridpane recibido. Se recorre todas las celdas del gridpane y al detectar
+    una golpeada, se superpone una imagen dependiendo del resultado del disparo: fallido, acertado y abarco hundido.
+     */
 
     public void updateGridVisuals(Board board, GridPane gridPane) {
+        //elimina los imagenes que esten asociadas al gridpane, para evitar elementos duplicados
         playerAnchorPane.getChildren().removeIf(node -> {
             if(node instanceof  ImageView){
                 Object gridPaneProperty = node.getProperties().get("associatedGrid");
@@ -342,11 +347,14 @@ public class GameController {
 
                 if (cell.isHit()) {
                     node.setDisable(true);
+                    //calculo de la posicion para la imagen
                     Bounds cellBounds = node.localToScene(node.getBoundsInLocal());
                     Point2D anchorPoint = playerAnchorPane.sceneToLocal(cellBounds.getMinX(), cellBounds.getMinY());
+                    //se crea la imagen
                     ImageView imageView = new ImageView();
                     imageView.setFitWidth(40);
                     imageView.setFitHeight(40);
+                    //se asigna la imagen correcta
                     if (!cell.isOccupied()) {
                         node.setStyle("-fx-background-color: salmon;");
                         imageView.setImage(missImage);
@@ -362,15 +370,16 @@ public class GameController {
 
                         }
                     }
+                    //posicionamiento preciso
                     imageView.setLayoutX(anchorPoint.getX() + (cellBounds.getWidth()-40)/2);
                     imageView.setLayoutY(anchorPoint.getY() + (cellBounds.getHeight() - 40)/2);
+                    //se marca la imagen como perteneciente al gridpane actual, usando los propiedades arbitrarias en los nodos
                     imageView.getProperties().put("associatedGrid",gridPane);
+                    //se añade la imagen al anchorpane
                     playerAnchorPane.getChildren().add(imageView);
                 }
             }
         }
-        //gridPane.getChildren().removeAll(nodesToRemove);
-        //gridPane.getChildren().addAll(nodesToAdd);
     }
 
 
@@ -522,13 +531,14 @@ public class GameController {
         return null; // not found
 
     }
-
+    //funcion para mostrar los barcos del enemigo cuando se presiona el botón "Mostrar tablero"
     @FXML
     private void cheatButtonPressed(){
         resetAuxFlags(machine.getBoard());
         drawShips(machine.getBoard(), mainGrid,true);
     }
 
+    //Cuando se deja de presionar el boton "Mostrar Tablero", se elimina la visualización de los barcos enemigos
     @FXML
     private void cheatButtonReleased(){
         playerAnchorPane.getChildren().removeIf(node -> "enemyShip".equals(node.getId()));
