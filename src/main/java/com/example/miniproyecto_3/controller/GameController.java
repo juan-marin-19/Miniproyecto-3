@@ -14,6 +14,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -41,6 +42,10 @@ public class GameController {
 
     @FXML
     private Button cheatButton;
+    @FXML
+    private Label playerLabel;
+    @FXML
+    private Label machineLabel;
 
 
 
@@ -137,12 +142,14 @@ public class GameController {
             }
             player.setSunkenShips(Integer.parseInt(playerData[1]));
             System.out.println("ships sunken by player"+player.getSunkenShips());
+            playerLabel.setText("Barcos hundidos por el jugador: "+player.getSunkenShips());
 
             String[] machineData =  plainTextFileReader.readFromFile("machine_data.csv");
             if(machineData == null || machineData.length <= 2){
-                throw new DataLoadException("Archivo player_data.csv corrupto o vacío");
+                throw new DataLoadException("Archivo machine_data.csv corrupto o vacío");
             }
             System.out.println("ships sunken by machine"+Integer.parseInt(machineData[1]));
+            machineLabel.setText("Barcos hundidos por el enemigo: "+Integer.parseInt(machineData[1]));
 
             Object objPlayer = seriazableFileHandler.deserialize("player_board.ser");
             if(!(objPlayer instanceof Board)){
@@ -433,6 +440,7 @@ public class GameController {
                             sunkenShipsByPlayer = Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]);
                             sunkenShipsByPlayer++;
                             System.out.println("Sunken ships by player: " + sunkenShipsByPlayer);
+                            playerLabel.setText("Barcos hundidos por jugador: " + sunkenShipsByPlayer);
 
                             // Actualizar archivo plano
                             String[] data = plainTextFileReader.readFromFile("player_data.csv");
@@ -446,6 +454,7 @@ public class GameController {
                             sunkenShipsByMachine = Integer.parseInt(plainTextFileReader.readFromFile("machine_data.csv")[1]);
                             sunkenShipsByMachine++;
                             System.out.println("Sunken ships by machine: " + sunkenShipsByMachine);
+                            machineLabel.setText("Barcos hundidos por el enemigo: " + sunkenShipsByMachine);
 
                             String[] data = plainTextFileReader.readFromFile("machine_data.csv");
 
