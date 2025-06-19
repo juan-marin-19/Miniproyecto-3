@@ -1,4 +1,6 @@
 package com.example.miniproyecto_3.controller;
+import com.example.miniproyecto_3.exceptions.DataLoadException;
+import com.example.miniproyecto_3.exceptions.InvalidMoveException;
 import com.example.miniproyecto_3.model.*;
 
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
@@ -128,21 +130,40 @@ public class GameController {
      * */
 
     public void startGame() {
+        try{
+            String[] playerData = plainTextFileReader.readFromFile("player_data.csv");
+            if(playerData == null || playerData.length <= 2){
+                throw new DataLoadException("Archivo player_data.csv corrupto o vacío");
+            }
+            player.setSunkenShips(Integer.parseInt(playerData[1]));
+            System.out.println("ships sunken by player"+player.getSunkenShips());
 
-        player.setSunkenShips(Integer.parseInt(plainTextFileReader.readFromFile("player_data.csv")[1]));
-        System.out.println("ships sunken by player"+player.getSunkenShips());
-        System.out.println("ships sunken by machine"+Integer.parseInt(plainTextFileReader.readFromFile("machine_data.csv")[1]));
+            String[] machineData =  plainTextFileReader.readFromFile("machine_data.csv");
+            if(machineData == null || machineData.length <= 2){
+                throw new DataLoadException("Archivo player_data.csv corrupto o vacío");
+            }
+            System.out.println("ships sunken by machine"+Integer.parseInt(machineData[1]));
 
-        playerBoard = (Board) seriazableFileHandler.deserialize("player_board.ser");
-        machine.setBoard((Board) seriazableFileHandler.deserialize("machine_board.ser"));
+            Object objPlayer = seriazableFileHandler.deserialize("player_board.ser");
+            if(!(objPlayer instanceof Board)){
+                throw new DataLoadException("El archivo player_board.ser no contiene un tablero válido");
+            }
+            playerBoard = (Board) objPlayer;
 
-        machine.getBoard().printCellGrid();
-        //playerBoard.printCellGrid();
+            Object objMachine = seriazableFileHandler.deserialize("machine_board.ser");
+            if(!(objMachine instanceof Board)){
+                throw new DataLoadException("El archivo machine_board.ser no contiene un tablero válido");
+            }
+            machine.setBoard((Board) objMachine);
+            machine.getBoard().printCellGrid();
+            //playerBoard.printCellGrid();
 
-        drawGrids();
-        drawShips(playerBoard,playerGrid, false);
-        //drawShips(machine.getBoard(),mainGrid);     // VISUALIZACIÓN TABLERO DEL OPONENTE O MAQUINA COLOCAR UN BOTÓN PARA LA OPCIÓN
-
+            drawGrids();
+            drawShips(playerBoard,playerGrid, false);
+            //drawShips(machine.getBoard(),mainGrid);
+        }catch(DataLoadException e){
+            System.out.println("Error crítico al cargar datos" + e.getMessage());
+        }
 
         handlePlayerShot();
         //solución para renderizado inicial correcto, evita que no se ven los elementos visuales al abrir la ventana de juego
@@ -260,31 +281,32 @@ public class GameController {
                 int row = GridPane.getRowIndex(node) - 1;
                 int col = GridPane.getColumnIndex(node) - 1;
                 node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                    Cell targetCell = machine.getBoard().getCell(row, col);
-
-                    if (!targetCell.isHit()) {
+                    try {
+                        if (row < 0 || row >= 10 || col >= 10 || col < 0) {
+                            throw new InvalidMoveException("Coordenadas fuera del tablero");
+                        }
+                        Cell targetCell = machine.getBoard().getCell(row, col);
+                        if (targetCell.isHit()) {
+                            saveGame();
+                            throw new InvalidMoveException(" Ya disparaste en esta celda");
+                        }
                         targetCell.hit();
-
                         updateGridVisuals(machine.getBoard(), mainGrid);
                         updateSunkenShipsCount(machine.getBoard(), false);
-
-
-                        node.setDisable(true);
-
+                        node.setDisable(false);
                         saveGame();
-
                         //  Aquí analizamos si fue acierto o fallo:
                         if (!targetCell.isOccupied()) {
                             // agua pasa el turno a la máquina
                             handleMachineShot();
-
-                        } else {
+                            } else {
                                 //  Tocado o hundido el jugador sigue, NO hacemos nada (no llamamos a handleMachineShot)
                                 System.out.println("¡Tocado o hundido! El jugador sigue.");
-                        }
-                    }
+                            }
 
-                    saveGame();
+                    }catch (InvalidMoveException ex){
+                        System.out.println("Movimiento invalido" + ex.getMessage());
+                    }
                 });
             }
         }
@@ -347,7 +369,7 @@ public class GameController {
                 Cell cell = board.getCell(row, col);
 
                 if (cell.isHit()) {
-                    node.setDisable(true);
+                    node.setDisable(false);
                     //calculo de la posicion para la imagen
                     Bounds cellBounds = node.localToScene(node.getBoundsInLocal());
                     Point2D anchorPoint = playerAnchorPane.sceneToLocal(cellBounds.getMinX(), cellBounds.getMinY());
@@ -355,10 +377,12 @@ public class GameController {
                     ImageView imageView = new ImageView();
                     imageView.setFitWidth(40);
                     imageView.setFitHeight(40);
+                    imageView.setMouseTransparent(true);
                     //se crea el rectangulo que va a contener la imagen
                     Rectangle rectangle = new Rectangle(40,40);
                     rectangle.setFill(Color.TRANSPARENT);
                     rectangle.setStroke(Color.TRANSPARENT);
+                    rectangle.setMouseTransparent(true);
                     //se asigna la imagen correcta
                     if (!cell.isOccupied()) {
                         node.setStyle("-fx-background-color: salmon;");
@@ -382,6 +406,7 @@ public class GameController {
                     graphicContainer.setLayoutY(anchorPoint.getY() + (cellBounds.getHeight() - 40)/2);
                     //se marca el group como perteneciente al gridpane actual, usando los propiedades arbitrarias en los nodos
                     graphicContainer.getProperties().put("associatedGrid",gridPane);
+                    graphicContainer.setMouseTransparent(true);
                     //se añade el group al anchorpane
                     playerAnchorPane.getChildren().add(graphicContainer);
                 }
