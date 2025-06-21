@@ -21,6 +21,11 @@ public class GameStage extends Stage {
     public GameStage(){}
 
     public void GameStage1() {
+        // Cerrar cualquier instancia previa
+        if (GameStageHolder.INSTANCE != null) {
+            GameStageHolder.INSTANCE.close();
+        }
+
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/miniproyecto_3/game-view.fxml"));
         try{
@@ -30,14 +35,29 @@ public class GameStage extends Stage {
             System.out.println("No se pudo cargar la vista");
             e.printStackTrace();
         }
+
+        try {
+            Image icon = new Image(getClass().getResourceAsStream("/images/favicon-16x16.png"));
+            getIcons().add(icon);
+        } catch (Exception e) {
+            System.err.println("Error al cargar el icono: " + e.getMessage());
+        }
+
         Scene scene = new Scene(root);
         setScene(scene);
         setTitle("Battleship");
         setResizable(false);
+        scene.getStylesheets().add((getClass().getResource("/css/game-view-style.css")).toExternalForm());
+        // Actualizar la instancia
+        GameStageHolder.INSTANCE = this;
         show();
     }
 
     public void GameStage2(){
+        // Cerrar cualquier instancia previa
+        if (GameStageHolder.INSTANCE != null) {
+            GameStageHolder.INSTANCE.close();
+        }
 
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/example/miniproyecto_3/placement-view.fxml"));
@@ -66,11 +86,14 @@ public class GameStage extends Stage {
         Font.loadFont(getClass().getResourceAsStream("/fonts/CinzelDecorative-Bold.ttf"), 14);
         Font.loadFont(getClass().getResourceAsStream("/fonts/CinzelDecorative-Regular.ttf"), 14);
 
+
         Scene scene = new Scene(root);
         scene.getStylesheets().add((getClass().getResource("/css/placement-style.css")).toExternalForm());
         setScene(scene);
         setTitle("Battleship");
         setResizable(false);
+        // Actualizar la instancia
+        GameStageHolder.INSTANCE = this;
         show();
     }
 

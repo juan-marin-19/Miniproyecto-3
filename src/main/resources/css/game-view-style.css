@@ -1,0 +1,75 @@
+
+.root {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #ffffff, #ffffff);
+    -fx-font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    -fx-background-image: url("../images/background_2.png");
+    -fx-background-size: 1015 995;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+}
+
+.label {
+    -fx-font-size: 16px; /* Ligero ajuste para mejorar legibilidad */
+    -fx-font-family: "CinzelRegular"; /* Igual que Placement para mantener elegancia */
+    -fx-text-fill: #e0eff4; /* Azul claro */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 5, 0, 1, 1);
+}
+
+/* Labels principales (arriba del BorderPane) */
+BorderPane > .top > .label {
+    -fx-font-size: 24px;
+    -fx-font-family: "CinzelBold"; /* Mismo toque que el título de Placement */
+    -fx-text-fill: #FFD700; /* Dorado para destacar */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 12, 0.6, 0, 2);
+}
+
+.grid-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.05); /* Transparente sutil como en placement */
+    -fx-border-color: #7b9ed9;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+}
+
+.cell {
+    -fx-background-color: rgba(0, 70, 128, 0.4);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 0.5px;
+    -fx-cursor: hand;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 0);
+}
+
+.cell:hover {
+    -fx-background-color: rgba(0, 100, 180, 0.6);
+    -fx-border-color: rgba(255, 255, 255, 0.8);
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 5, 0, 0, 0);
+}
+
+#cheatButton {
+    -fx-background-color: #32CD32; /* Igual que boton-jugar en placement */
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-font-family: "CinzelBold";
+}
+
+#cheatButton:hover {
+    -fx-background-color: #2E8B57;
+}
+
+#cheatButton:pressed {
+    -fx-background-color: #228B22;
+    -fx-translate-y: 2px;
+}
+
+/* Labels de jugador y máquina */
+#machineLabel, #playerLabel {
+    -fx-font-size: 16px;
+    -fx-font-family: "CinzelRegular";
+    -fx-text-fill: #e0eff4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 5, 0, 1, 1);
+}

@@ -6,13 +6,16 @@ import com.example.miniproyecto_3.model.*;
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
 import com.example.miniproyecto_3.view.Figures;
+import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -26,6 +29,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -484,9 +488,6 @@ public class GameController {
 
     }
 
-
-
-
     public void endGame(String message) {
         // Cambiar el campo de "puede seguir jugando" a false
         String[] playerData = plainTextFileReader.readFromFile("player_data.csv");
@@ -496,6 +497,7 @@ public class GameController {
             plainTextFileReader.writeToFile("player_data.csv", newContent);
         }
 
+        disableGameControls();
         // Desactivar todos los botones del tablero enemigo
         for (Node node : mainGrid.getChildren()) {
             if (node instanceof Button) {
@@ -516,6 +518,11 @@ public class GameController {
         });
     }
 
+    private void disableGameControls() {
+        mainGrid.setDisable(true);
+        playerGrid.setDisable(true);
+        cheatButton.setDisable(true);
+    }
 
     /**
      *  Reset aux después de que se colocaron visualmente los barcos
