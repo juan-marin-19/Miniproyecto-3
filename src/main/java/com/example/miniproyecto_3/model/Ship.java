@@ -1,68 +1,113 @@
 package com.example.miniproyecto_3.model;
 
-import javafx.scene.paint.Color;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
+
+/**
+ * Class that represents a ship. Each ship has a size, orientation, a number of remaining lives,
+ * and some helper auxiliar variables for game logic and visuals.
+ *
+ */
 public class Ship implements Serializable {
+
+    /**
+     * Orientation of the ship: true for horizontal, false for vertical.
+     * @serial true = horizontal, false = vertical
+     */
+    private final boolean orientation;
+
+    /**
+     * Number of cells the ship occupies.
+     * @serial Must be > 0
+     */
+    private final int size;
+
+    /**
+     * Auxiliary boolean used for visual tracking in GameController.
+     * @serial true = drawn, false = not yet drawn
+     */
+    private boolean aux;
+
+    /**
+     * Number of remaining lives (not hit parts) of the ship
+     * @serial Must be >= 0
+     */
+    private int lives;
+
+    /**
+     * Indicates if the ship has already been counted as sunken.
+     * @serial true if already counted, false otherwise
+     */
+    private boolean alreadyCounted = false;
 
 
 
     /**
-     *la clase barco tiene una lista de celdas asociadas las cuales a su vez guardan su posición en el arreglo2d board
+     * Creates a ship with a given size and orientation.
      *
-     * tiene la orientación, verdadero = horizontal, falso = vertical
-     *
-     * y el tamaño del barco
-     * */
-    private boolean orientation;
-    private int size;
-    private boolean aux;//auxiliar para colocar los barcos visualmente en gameController ( colocado o no)
-    private int lifes;
-    private boolean alreadyCounted = false;
-
-    private List<Cell> cells; // donde está el barco
-
+     * @param size number of cells the ship occupies
+     * @param orientation true if horizontal, false if vertical
+     */
     public Ship(int size, boolean orientation) {
         this.size = size;
         this.orientation = orientation;
-        this.cells = new ArrayList<>();
-        this.lifes = size;
+        this.lives = size;
     }
 
-    public int getSize() { return size; }
-    public boolean getOrientation() { return orientation; }
-
-    // añade una celda a un barco
-    public void addCell(Cell cell) {
-        cells.add(cell);
-    }
-
-    public List<Cell> getCells() {
-        return cells;
-    }
 
     /**
-     * Verifica si el barco está completamente hundido (todas sus celdas han sido disparadas).
+     * @return the size of the ship
      */
+    public int getSize() { return size; }
 
 
-    public int getLifes() {return lifes; }
+    /**
+     * @return the orientation of the ship (true = horizontal, false = vertical)
+     */
+    public boolean getOrientation() { return orientation; }
 
+
+    /**
+     * @return the number of remaining lives (parts that haven’t been hit yet)
+     */
+    public int getLives() {return lives; }
+
+
+    /**
+     * @return the visual helper aux used in GameController
+     */
     public boolean getAux() { return aux; }
 
+
+    /**
+     * Sets the visual helper aux used in GameController.
+     *
+     * @param aux true if the ship has already been drawn
+     */
     public void setAux(boolean aux) { this.aux = aux; }
 
+
+    /**
+     * Registers a hit on the ship, decreasing its remaining lives by one.
+     */
     public void registerHit(){
-        this.lifes--;
+        this.lives--;
     }
 
+
+    /**
+     * @return true if the ship has already been counted as sunken
+     */
     public boolean isAlreadyCounted() {
         return alreadyCounted;
     }
 
+
+    /**
+     * Sets whether the ship has already been counted as sunken.
+     *
+     * @param alreadyCounted true if already counted
+     */
     public void setAlreadyCounted(boolean alreadyCounted) {
         this.alreadyCounted = alreadyCounted;
     }

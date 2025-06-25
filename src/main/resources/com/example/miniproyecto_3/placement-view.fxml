@@ -12,16 +12,15 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="965.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.miniproyecto_3.controller.PlacementController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="625.0" prefWidth="982.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.miniproyecto_3.controller.PlacementController">
     <top>
         <!-- Título principal -->
-        <Label fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="964.0" styleClass="label-titulo" textAlignment="CENTER" />
+        <Label fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="130.0" prefWidth="964.0" styleClass="label-titulo" textAlignment="CENTER" />
     </top>
     <center>
-        <HBox prefHeight="502.0" prefWidth="966.0" BorderPane.alignment="CENTER">
+        <HBox prefHeight="490.0" prefWidth="965.0" BorderPane.alignment="CENTER">
             <children>
-                <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="496.0" prefWidth="966.0">
+                <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="463.0" prefWidth="968.0">
                     <children>
                         <!-- Grid del jugador -->
                         <GridPane fx:id="playerGrid" alignment="CENTER" gridLinesVisible="true" layoutX="34.0" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="440.0" prefWidth="460.0">
@@ -56,29 +55,24 @@
                         </GridPane>
 
                         <!-- Paleta de barcos -->
-                        <FlowPane fx:id="shipPalette" layoutX="517.0" layoutY="54.0" prefHeight="334.0" prefWidth="414.0" styleClass="ship-palette">
+                        <FlowPane fx:id="shipPalette" layoutX="505.0" layoutY="47.0" prefHeight="334.0" prefWidth="458.0" styleClass="ship-palette">
                             <children>
                                 <Pane prefHeight="32.0" prefWidth="397.0" />
                             </children>
                         </FlowPane>
 
                                           <!-- Label "Coloca los Barcos" -->
-                        <Label fx:id="colocaLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="522.0" layoutY="-24.0" prefHeight="88.0" prefWidth="396.0" styleClass="colocaLabel" text="COLOCA LOS BARCOS" textAlignment="CENTER">
+                        <Label fx:id="colocaLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="592.0" layoutY="-24.0" prefHeight="88.0" prefWidth="326.0" styleClass="colocaLabel" text="PLACE THE SHIPS" textAlignment="CENTER">
                             <font>
                                 <Font name="System Bold" size="18.0" />
                             </font>
                         </Label>
                             <!-- Label de instrucciones -->
-                            <Label fx:id="instructionLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="506.0" layoutY="391.0" prefHeight="88.0" prefWidth="461.0" styleClass="label-instruccion" text="Presiona 'G' para girar un barco antes de colocarlo" textAlignment="CENTER">
+                            <Label fx:id="instructionLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="506.0" layoutY="391.0" prefHeight="59.0" prefWidth="462.0" styleClass="label-instruccion" text="Press &quot;G&quot; to rotate a ship" textAlignment="CENTER">
                                 <font>
                                     <Font size="15.0" />
                                 </font>
                             </Label>
-                  <Label fx:id="colocaLabel1" alignment="CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="-47.0" prefHeight="88.0" prefWidth="396.0" styleClass="colocaLabel" textAlignment="CENTER">
-                     <font>
-                        <Font name="Sans Serif Collection" size="32.0" />
-                     </font>
-                  </Label>
                     </children>
                 </AnchorPane>
             </children>
@@ -90,7 +84,7 @@
                 <Pane prefHeight="64.0" prefWidth="965.0" HBox.hgrow="ALWAYS">
                     <children>
                         <!-- Botón "Listo para jugar" -->
-                        <Button fx:id="playButton" layoutX="640.0" layoutY="25.0" onAction="#handleClickContinue" styleClass="boton-jugar" text="LISTO PARA JUGAR" />
+                        <Button fx:id="playButton" layoutX="652.0" layoutY="1.0" onAction="#handleClickContinue" styleClass="boton-jugar" text="READY TO PLAY" />
                     </children>
                 </Pane>
             </children>

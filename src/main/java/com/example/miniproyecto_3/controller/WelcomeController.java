@@ -1,63 +1,77 @@
 package com.example.miniproyecto_3.controller;
 
 import com.example.miniproyecto_3.model.Player;
-import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
+import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileHandler;
 import javafx.fxml.FXML;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.TextField;
 import com.example.miniproyecto_3.view.WelcomeStage;
 import com.example.miniproyecto_3.view.GameStage;
 
+/**
+ * Class made for handling events in the main welcome window of the game.
+ */
 public class WelcomeController {
 
-    private PlainTextFileReader plainTextFileReader;
-
+    private PlainTextFileHandler plainTextFileHandler;
 
     @FXML
     private TextField nickname;
 
+    /**
+     * Initializes the controller by creating an instance of the class responsible for handling plain text files.
+     */
     public void initialize() {
-        this.plainTextFileReader = new PlainTextFileReader();
-
+        this.plainTextFileHandler = new PlainTextFileHandler();
     }
 
-
+    /**
+     * Handles the event of the play button from the welcome window.
+     * It loads the window to place the ships, creates the player object,
+     * and the plain text file.
+     *
+     * @param event action event from the button.
+     */
     @FXML
     public void handleClickPlay(javafx.event.ActionEvent event) {
 
         if (!nickname.getText().isEmpty()) {
             Player player = new Player(nickname.getText().trim(), 0);
             String content = player.getNickname() + "," + player.getSunkenShips() + "," + "false";
-            plainTextFileReader.writeToFile("player_data.csv", content);
+            plainTextFileHandler.writeToFile("player_data.csv", content);
 
             WelcomeStage.deleteInstance();
-            // Crea una nueva instancia de GameStage
+            // Create a new instance of GameStage
 
             GameStage gameStage = new GameStage();
-            gameStage.GameStage2();
-            // Asegúrate de que el controlador no sea null antes de llamar startPlay
+            gameStage.placementControllerStage();
+            // Make sure the controller is not null before calling startPlay
 
-            //AQUI VA UN TRY CATCH PARA EL GAMECONTROLLER NULL
+            // TRY CATCH IN CASE GameController IS NULL
             try {
                 PlacementController controller = gameStage.getPlacementController();
                 if (controller != null) {
                     controller.setPlayer(player);
                 } else {
-                    throw new NullPointerException("PlacementController es null");
+                    throw new NullPointerException("PlacementController is null");
                 }
             } catch (Exception e){
-                System.out.println("Error al inicializar el placementController:" + e.getMessage());
+                System.out.println("Error while initializing the PlacementController:" + e.getMessage());
             }
         } else {
-            System.out.println("El nombre de usuario está vacío.");
+            System.out.println("The username is empty.");
         }
     }
 
-
+    /**
+     * Handles the event of the continue button.
+     * It loads the game window and the player from the plain text file.
+     *
+     * @param event action event from the button.
+     */
     @FXML
     public void handleClickContinue(javafx.event.ActionEvent event) {
 
-        String[] data = plainTextFileReader.readFromFile("player_data.csv");
+        String[] data = plainTextFileHandler.readFromFile("player_data.csv");
         boolean ableToContinue = Boolean.parseBoolean(data[2]);
         if (ableToContinue) {
             String nickname = data[0];
@@ -66,11 +80,11 @@ public class WelcomeController {
             // Player player = (Player) serializableFileHandler.deserialize("player_data.ser");
 
             WelcomeStage.deleteInstance();
-            // Crea una nueva instancia de GameStage
+            // Create a new instance of GameStage
             GameStage gameStage = new GameStage();
-            gameStage.GameStage1();
+            gameStage.gameControllerStage();
 
-            // Asegúrate de que el controlador no sea null antes de llamar startPlay
+            // Make sure the controller is not null before calling startGame
 
             try {
                 GameController controller = gameStage.getGameController();
@@ -78,18 +92,14 @@ public class WelcomeController {
                     controller.setPlayer(player);
                     controller.startGame();
                 } else {
-                    throw new NullPointerException("GameController es null");
+                    throw new NullPointerException("GameController is null");
                 }
             } catch (Exception e){
-                System.out.println("Error al inicializar el GameController:" + e.getMessage());
+                System.out.println("Error while initializing the GameController:" + e.getMessage());
             }
         } else {
-            System.out.println("no hay partida!!");
+            System.out.println("no game available!!");
         }
-
-
-
-
     }
 
 }
