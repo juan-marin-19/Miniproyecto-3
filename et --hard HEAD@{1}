@@ -1,0 +1,62 @@
+[33m23617ba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mjmo[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{0}: pull origin master: Fast-forward
+[33mb327e77[m[33m ([m[1;31morigin/jmo[m[33m)[m HEAD@{1}: commit: Working game
+[33mbd0e234[m HEAD@{2}: commit: almost finished gameController
+[33m2099d9e[m HEAD@{3}: reset: moving to HEAD
+[33m2099d9e[m HEAD@{4}: commit: some progress gameController
+[33mf7133b6[m HEAD@{5}: rebase (finish): returning to refs/heads/jmo
+[33mf7133b6[m HEAD@{6}: rebase (continue): changes gamecontroller
+[33md6f0553[m HEAD@{7}: pull origin master --rebase (start): checkout d6f05530907099295ba2d8cae8ed5c084f716430
+[33m073c91e[m HEAD@{8}: rebase (abort): returning to refs/heads/jmo
+[33md6f0553[m HEAD@{9}: pull origin master --rebase (start): checkout d6f05530907099295ba2d8cae8ed5c084f716430
+[33m073c91e[m HEAD@{10}: commit: changes gamecontroller
+[33m19e8cdf[m HEAD@{11}: commit: Progress on gameController and some minor changes elsewhere
+[33m0f8fcc6[m HEAD@{12}: commit: implementacion de archivos serializables
+[33m000e35a[m HEAD@{13}: commit: some changes placement controller
+[33m703744e[m HEAD@{14}: reset: moving to HEAD
+[33m703744e[m HEAD@{15}: commit: placement controller's logic finish
+[33m2930c49[m HEAD@{16}: commit: progress placement controller
+[33m0f4884e[m HEAD@{17}: commit: almost finish placement controller
+[33me1e0cf1[m HEAD@{18}: commit: progress on placementController
+[33me2ae820[m HEAD@{19}: commit: changes on the model and progress on the controller
+[33m8550788[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{20}: merge master: Fast-forward
+[33m5b015b4[m HEAD@{21}: checkout: moving from master to jmo
+[33m8550788[m[33m ([m[1;32mmaster[m[33m)[m HEAD@{22}: commit: working view
+[33m2ffe6cc[m[33m ([m[1;31morigin/jdg[m[33m, [m[1;32mjdg[m[33m)[m HEAD@{23}: merge origin/jdg: Fast-forward
+[33m5b015b4[m HEAD@{24}: checkout: moving from jdg to master
+[33m2ffe6cc[m[33m ([m[1;31morigin/jdg[m[33m, [m[1;32mjdg[m[33m)[m HEAD@{25}: commit: working view
+[33mecfa1bb[m HEAD@{26}: checkout: moving from jmo to jdg
+[33m5b015b4[m HEAD@{27}: checkout: moving from jmo to jmo
+[33m5b015b4[m HEAD@{28}: merge master: Fast-forward
+[33m16312ab[m HEAD@{29}: checkout: moving from master to jmo
+[33m5b015b4[m HEAD@{30}: merge jmo: Merge made by the 'ort' strategy.
+[33m6c9ccf7[m HEAD@{31}: pull: Fast-forward
+[33m9b545d8[m HEAD@{32}: checkout: moving from jmo to master
+[33m16312ab[m HEAD@{33}: commit: new view placement..
+[33m50674b3[m HEAD@{34}: commit: new placement view
+[33mee1fe4a[m HEAD@{35}: merge origin/master: Fast-forward
+[33md1346b8[m HEAD@{36}: commit: plain files added
+[33m9b545d8[m HEAD@{37}: pull origin master: Fast-forward
+[33m4a52280[m HEAD@{38}: checkout: moving from master to jmo
+[33m9b545d8[m HEAD@{39}: pull: Merge made by the 'ort' strategy.
+[33m4a52280[m HEAD@{40}: merge origin/jmo: Fast-forward
+[33ma1d70d5[m HEAD@{41}: checkout: moving from jmo to master
+[33m4a52280[m HEAD@{42}: commit: figures added
+[33m7737dd2[m HEAD@{43}: merge origin/ibm: Merge made by the 'ort' strategy.
+[33m53c95e4[m HEAD@{44}: checkout: moving from jmo to jmo
+[33m53c95e4[m HEAD@{45}: commit: view progress
+[33maac2040[m HEAD@{46}: commit: plain files
+[33m9f2e34d[m HEAD@{47}: pull origin jmo: Merge made by the 'ort' strategy.
+[33mef544cf[m HEAD@{48}: commit: view 2.0
+[33m4b20174[m HEAD@{49}: merge origin/ibm: Fast-forward
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{50}: checkout: moving from jmo to jmo
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{51}: checkout: moving from ibm to jmo
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{52}: checkout: moving from jmo to ibm
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{53}: checkout: moving from master to jmo
+[33ma1d70d5[m HEAD@{54}: checkout: moving from ibm to master
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{55}: checkout: moving from jmo to ibm
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{56}: checkout: moving from jmo to jmo
+[33m1aef4f9[m[33m ([m[1;32mibm[m[33m)[m HEAD@{57}: pull origin master: Fast-forward
+[33m377ef06[m HEAD@{58}: commit: first view version
+[33m346753a[m HEAD@{59}: commit: primer commit jmo
+[33ma1d70d5[m HEAD@{60}: checkout: moving from master to jmo
+[33ma1d70d5[m HEAD@{61}: commit (initial): primer commit

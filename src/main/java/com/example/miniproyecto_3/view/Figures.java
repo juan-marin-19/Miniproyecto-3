@@ -1,28 +1,21 @@
 package com.example.miniproyecto_3.view;
-import javafx.beans.binding.Bindings;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
 
+/**
+ * Class that creates the shapes for ships and other graphical elements used in the game.
+ */
 public class Figures {
 
-    public static Group crearEquis(Color color, double grosor) {
-        Path equis = new Path(
-                new MoveTo(0, 0),
-                new LineTo(40, 40),
-                new MoveTo(0, 40),
-                new LineTo(40, 0)
-        );
-        equis.setStroke(color);
-        equis.setStrokeWidth(grosor);
-        return new Group(equis);
-    }
-
-    public static Group Portaaviones(Color colorRelleno, Color colorBorde){
+    /**
+     * Creates the shape of a carrier ship.
+     *
+     * @param fillColor the color used to fill the shape
+     * @param borderColor the color used for the border
+     * @return a group containing the carrier
+     */
+    public static Group aircraftCarrier(Color fillColor, Color borderColor){
         Path carrier = new Path();
         carrier.getElements().addAll(
                 new MoveTo(20,10),
@@ -45,8 +38,8 @@ public class Figures {
                 new LineTo(15,40),
                 new ClosePath()
         );
-        carrier.setFill(colorRelleno);
-        carrier.setStroke(colorBorde);
+        carrier.setFill(fillColor);
+        carrier.setStroke(borderColor);
         carrier.setStrokeWidth(1);
         Path pista = new Path(
                 new MoveTo(35, 40),
@@ -54,7 +47,7 @@ public class Figures {
                 new MoveTo(25,191),
                 new LineTo(44,47)
         );
-        pista.setStroke(colorBorde);
+        pista.setStroke(borderColor);
         pista.setStrokeWidth(1);
         Ellipse plane1 = new Ellipse(12,50,3,2);
         plane1.setFill(Color.BLACK);
@@ -73,7 +66,15 @@ public class Figures {
         return new Group(carrier, pista, plane1,plane2, plane3, plane4,plane5,rect,plane6);
     }
 
-    public static Group Destructor(Color colorRelleno, Color colorBorde){
+
+    /**
+     * Creates the shape of a destroyer ship.
+     *
+     * @param fillColor the color used to fill the shape
+     * @param borderColor the color used for the border
+     * @return a group containing the destroyer
+     */
+    public static Group destroyer(Color fillColor, Color borderColor){
         Path destroyer = new Path();
         destroyer.getElements().addAll(
                 new MoveTo(25,10),
@@ -97,8 +98,8 @@ public class Figures {
                 new LineTo(13,30),
                 new ClosePath()
         );
-        destroyer.setFill(colorRelleno);
-        destroyer.setStroke(colorBorde);
+        destroyer.setFill(fillColor);
+        destroyer.setStroke(borderColor);
         destroyer.setStrokeWidth(1);
         Rectangle rect = new Rectangle(18,50,14,20);
         rect.setFill(Color.BLACK);
@@ -109,7 +110,15 @@ public class Figures {
         return new Group(destroyer,rect,rect2,circle);
     }
 
-    public static Group Fragata(Color colorRelleno, Color colorBorde) {
+
+    /**
+     * Creates the shape of a frigate ship.
+     *
+     * @param fillColor the color used to fill the shape
+     * @param borderColor the color used for the border
+     * @return a group containing the frigate
+     */
+    public static Group frigate(Color fillColor, Color borderColor) {
         Path frigate = new Path();
         frigate.getElements().addAll(
                 new MoveTo(25,5),
@@ -129,8 +138,8 @@ public class Figures {
                 new HLineTo(15),
                 new ClosePath()
         );
-        frigate.setFill(colorRelleno);
-        frigate.setStroke(colorBorde);
+        frigate.setFill(fillColor);
+        frigate.setStroke(borderColor);
         frigate.setStrokeWidth(1);
         Circle circle = new Circle(25,15,4);
         circle.setFill(Color.BLACK);
@@ -139,7 +148,15 @@ public class Figures {
         return new Group(frigate,circle,rect);
     }
 
-    public static Group Submarine(Color colorRelleno, Color colorBorde) {
+
+    /**
+     * Creates the shape of a submarine ship.
+     *
+     * @param fillColor the color used to fill the shape
+     * @param borderColor the color used for the border
+     * @return a group containing the submarine
+     */
+    public static Group Submarine(Color fillColor, Color borderColor) {
         Path submarine = new Path();
         submarine.getElements().addAll(
                 new MoveTo(20,10),
@@ -156,52 +173,35 @@ public class Figures {
                 new LineTo(40,130),
                 new LineTo(32,118)
         );
-        submarine.setFill(colorRelleno);
+        submarine.setFill(fillColor);
         submarine.setStrokeWidth(1);
-        submarine.setStroke(colorBorde);
+        submarine.setStroke(borderColor);
 
         Ellipse elipse = new Ellipse(25,130,3,15);
         elipse.setFill(Color.DIMGREY);
-        elipse.setStroke(colorBorde);
+        elipse.setStroke(borderColor);
 
         Ellipse elipse2 = new Ellipse(25,30,5,10);
         elipse2.setFill(Color.BLACK);
-        elipse2.setStroke(colorBorde);
+        elipse2.setStroke(borderColor);
         return new Group(submarine,elipse,elipse2);
     }
 
-    public static void prepareFigures(Group figure, Pane contenedor, double baseWidth, double baseHeight, int isHorizontal) {
-        // Escala
-        double finalBaseWidth = (isHorizontal == 0) ? baseHeight : baseWidth;
-        double finalBaseHeight = (isHorizontal == 0) ? baseWidth : baseHeight;
 
-        Scale escala = new Scale();
-        escala.xProperty().bind(Bindings.createDoubleBinding(
-                () -> contenedor.getWidth() / finalBaseWidth,
-                contenedor.widthProperty()
-        ));
-        escala.yProperty().bind(Bindings.createDoubleBinding(
-                () -> contenedor.getHeight() / finalBaseHeight,
-                contenedor.heightProperty()
-        ));
-        figure.getTransforms().add(escala);
-
-        // Rotación (después de escalar)
-        if (isHorizontal == 0) {
-            Bounds bounds = figure.getBoundsInParent(); // importante: usar getBoundsInParent tras escalar
-            double centerX = bounds.getMinX() + bounds.getWidth() / 2;
-            double centerY = bounds.getMinY() + bounds.getHeight() / 2;
-            figure.getTransforms().add(new Rotate(90, centerX, centerY));
-        }
-    }
-
-
-    public static Group createShip(int size, Color colorRelleno, Color colorBorde) {
+    /**
+     * Creates a ship figure based on its size.
+     *
+     * @param size the size of the ship (1 to 4)
+     * @param fillColor the color used to fill the shape
+     * @param borderColor the color used for the border
+     * @return a group containing the correct ship shape
+     */
+    public static Group createShip(int size, Color fillColor, Color borderColor) {
         return switch (size) {
-            case 1 -> Fragata(colorRelleno, colorBorde);
-            case 2 -> Destructor(colorRelleno, colorBorde);
-            case 3 -> Submarine(colorRelleno, colorBorde);
-            case 4 -> Portaaviones(colorRelleno, colorBorde);
+            case 1 -> frigate(fillColor, borderColor);
+            case 2 -> destroyer(fillColor, borderColor);
+            case 3 -> Submarine(fillColor, borderColor);
+            case 4 -> aircraftCarrier(fillColor, borderColor);
             default -> throw new IllegalArgumentException("Tamaño de barco no válido: " + size);
         };
     }

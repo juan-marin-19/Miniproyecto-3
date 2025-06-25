@@ -46,11 +46,11 @@ BorderPane > .top > .label {
 }
 
 #cheatButton {
-    -fx-background-color: #32CD32; /* Igual que boton-jugar en placement */
+    -fx-background-color: #A0522D; /* Madera tipo caoba suave */
     -fx-text-fill: white;
-    -fx-font-size: 16px;
+    -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
+    -fx-padding: 6px 16px;
     -fx-background-radius: 8px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2);
     -fx-cursor: hand;
@@ -58,11 +58,11 @@ BorderPane > .top > .label {
 }
 
 #cheatButton:hover {
-    -fx-background-color: #2E8B57;
+    -fx-background-color: #8B4513; /* SaddleBrown al hacer hover */
 }
 
 #cheatButton:pressed {
-    -fx-background-color: #228B22;
+    -fx-background-color: #5C3317; /* Madera más oscura al presionar */
     -fx-translate-y: 2px;
 }
 
@@ -70,6 +70,9 @@ BorderPane > .top > .label {
 #machineLabel, #playerLabel {
     -fx-font-size: 16px;
     -fx-font-family: "CinzelRegular";
-    -fx-text-fill: #e0eff4;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 5, 0, 1, 1);
+    -fx-text-fill: white; /* Cambiado de negro a blanco */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 4, 0.3, 1, 1);
+    -fx-background-color: rgba(0, 0, 0, 0.4); /* Fondo semitransparente */
+    -fx-padding: 6px; /* Espacio interno para mayor legibilidad */
+    -fx-background-radius: 8px; /* Bordes redondeados para estética */
 }
