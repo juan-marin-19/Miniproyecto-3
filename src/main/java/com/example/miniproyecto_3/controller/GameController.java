@@ -29,7 +29,7 @@ import javafx.util.Duration;
 /**
  * Class that controls the game window.
  */
-public class GameController implements IGameController {
+public class GameController  implements IGameController {
 
     @FXML
     private GridPane playerGrid;
@@ -238,7 +238,7 @@ public class GameController implements IGameController {
      * Places buttons and stackPanes on the machines and players gridPane
      * to manage the game visually through them
      */
-    private void drawGrids() {
+    public void drawGrids() {
 
         for (int i = 1; i < 11; i++) {
             for (int j = 1; j < 11; j++) {
@@ -577,7 +577,7 @@ public class GameController implements IGameController {
      * @see #resetAux(Board)
      */
     @FXML
-    private void cheatButtonPressed() {
+    public void cheatButtonPressed() {
         resetAux(machine.getBoard());
         drawShips(machine.getBoard(), mainGrid, true);
     }
@@ -587,7 +587,7 @@ public class GameController implements IGameController {
      * Method to remove the enemy ships when the "Show Board" button is released.
      */
     @FXML
-    private void cheatButtonReleased() {
+    public void cheatButtonReleased() {
         playerAnchorPane.getChildren().removeIf(node -> "enemyShip".equals(node.getId()));
     }
 

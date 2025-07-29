@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Class that manages the ship placement and switches to the game window.
  */
-public class PlacementController {
+public class PlacementController implements IPlacementController {
 
     private Player player;
     private boolean dragging = false; // True if a ship is being dragged false otherwise; used to know if its posible to rotate a ship
@@ -171,7 +171,7 @@ public class PlacementController {
      *
      * @see #getCellPane(GridPane, int, int)
      */
-    private void loadShip(Group shipVersion, int version) {
+    public void loadShip(Group shipVersion, int version) {
 
         shipVersion.setScaleX(0.78);
         shipVersion.setScaleY(0.78);
@@ -418,7 +418,7 @@ public class PlacementController {
     /**
      * Loads the StackPane cells into the GridPane to manage the ship positions.
      */
-    private void drawGrid() {
+    public void drawGrid() {
         for (int i = 1; i < 11; i++) {
             for (int j = 1; j < 11; j++) {
                 //StackPane allows to place figures upon it

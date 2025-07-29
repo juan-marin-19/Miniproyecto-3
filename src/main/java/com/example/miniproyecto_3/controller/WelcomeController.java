@@ -10,7 +10,7 @@ import com.example.miniproyecto_3.view.GameStage;
 /**
  * Class made for handling events in the main welcome window of the game.
  */
-public class WelcomeController {
+public class WelcomeController implements IWelcomeController {
 
     private PlainTextFileHandler plainTextFileHandler;
 
