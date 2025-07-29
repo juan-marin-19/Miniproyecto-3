@@ -8,7 +8,7 @@ import java.util.List;
  * Class to store the board where the ships are placed and manage the logic for positioning them and other related operations.
  *
  */
-public class Board implements Serializable {
+public class Board implements Serializable, IBoard {
 
 
     /**
@@ -69,6 +69,7 @@ public class Board implements Serializable {
      *
      * @return true if the ship can be placed, false otherwise
      */
+    @Override
     public boolean canPlaceShip(int startRow, int startCol, int length, boolean isVertical) {
 
         startRow = startRow - 1;
@@ -107,6 +108,7 @@ public class Board implements Serializable {
      *
      * @return list of int arrays with the coordinates of the ship
      */
+    @Override
     public List<int[]> getCoordinatesForShip(int startRow, int startCol, int length, boolean isVertical) {
         List<int[]> coords = new ArrayList<>();
         if (!canPlaceShip(startRow, startCol, length, isVertical)) {
@@ -128,6 +130,7 @@ public class Board implements Serializable {
      *
      * @see #printCellGrid()
      */
+    @Override
     public void placeShip(List<int[]> coords, boolean isHorizontal) {
         Ship ship = new Ship(coords.size(), isHorizontal);
         for (int[] pos : coords) {
@@ -158,6 +161,7 @@ public class Board implements Serializable {
     /**
      * Prints the current board with cell information.
      */
+    @Override
     public void printCellGrid() {
         for(int i =0; i < 10; i++){
             for(int j =0; j < 10; j++){
@@ -180,6 +184,7 @@ public class Board implements Serializable {
      *
      * @return Cell object that contains a ship or is empty
      */
+    @Override
     public Cell getCell(int row, int col) {
         return cellGrid[row][col];
     }
@@ -190,6 +195,7 @@ public class Board implements Serializable {
      *
      * @param lastShotRow row of the last shot
      */
+    @Override
     public void setLastShotRow(int lastShotRow) {this.lastShotRow = lastShotRow;}
 
 
@@ -198,18 +204,21 @@ public class Board implements Serializable {
      *
      * @param lastShotColumn column of the last shot
      */
+    @Override
     public void setLastShotColumn(int lastShotColumn) {this.lastShotColumn = lastShotColumn;}
 
 
     /**
      * @return the row of the last cell shot by machine
      */
+    @Override
     public int getLastShotRow(){return lastShotRow;}
 
 
     /**
      * @return the column of the last cell shot by machine
      */
+    @Override
     public int getLastShotColumn(){return lastShotColumn;}
 
 

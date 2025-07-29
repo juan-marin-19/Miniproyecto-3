@@ -29,7 +29,7 @@ import javafx.util.Duration;
 /**
  * Class that controls the game window.
  */
-public class GameController {
+public class GameController implements IGameController {
 
     @FXML
     private GridPane playerGrid;
@@ -67,6 +67,7 @@ public class GameController {
     /**
      * Initializes the boards and the objects that manage the files.
      */
+    @Override
     public void initialize() {
 
        // cheatButton.setVisible(false); // Verification button
@@ -94,6 +95,7 @@ public class GameController {
      * @see #handlePlayerShot()
      * @see #updateGridVisuals(Board, GridPane)
      */
+    @Override
     public void startGame() {
         try {
             String[] playerData = plainTextFileHandler.readFromFile("player_data.csv");
@@ -163,6 +165,7 @@ public class GameController {
      *                  
      * @see #getCellPane(GridPane, int, int)
      */
+    @Override
     public void drawShips(Board board, GridPane gridPane, boolean cheatMode) {
 
         for (int row = 0; row < 10; row++) {
@@ -267,6 +270,7 @@ public class GameController {
      * @see #updateSunkenShipsCount(Board, boolean)
      * @see #saveGame()
      */
+    @Override
     public void handlePlayerShot() {
         for (Node node : mainGrid.getChildren()) {
             if (node instanceof Button) {
@@ -311,6 +315,7 @@ public class GameController {
      * @see #updateSunkenShipsCount(Board, boolean)
      * @see #saveGame()
      */
+    @Override
     public void handleMachineShot() {
         PauseTransition pause = new PauseTransition(Duration.seconds(0.5)); // 0.5s between shots
 
@@ -345,6 +350,7 @@ public class GameController {
      * @param board the board of the player or the machine
      * @param gridPane the container of the grid (main or position board)
      */
+    @Override
     public void updateGridVisuals(Board board, GridPane gridPane) {
 
         playerAnchorPane.getChildren().removeIf(node -> {
@@ -416,6 +422,7 @@ public class GameController {
      *
      * @see #endGame(String)
      */
+    @Override
     public void updateSunkenShipsCount(Board board, boolean isPlayerBoard) {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -472,6 +479,7 @@ public class GameController {
      *
      * @param message message to show in an alert window
      */
+    @Override
     public void endGame(String message) {
 
         String[] playerData = plainTextFileHandler.readFromFile("player_data.csv");
@@ -507,6 +515,7 @@ public class GameController {
      *
      * @param board the board of the player or the machine
      */
+    @Override
     public void resetAux(Board board) {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
@@ -522,6 +531,7 @@ public class GameController {
     /**
      * Serializes the boards after a change.
      */
+    @Override
     public void saveGame() {
         seriazableFileHandler.serialize("player_board.ser", playerBoard);
         seriazableFileHandler.serialize("machine_board.ser", machine.getBoard());
@@ -533,6 +543,7 @@ public class GameController {
      *
      * @param player object that stores the player info
      */
+    @Override
     public void setPlayer(Player player) {
         this.player = player;
     }
@@ -542,6 +553,7 @@ public class GameController {
      * Same method as in PlacementController
      * Gets the cell from the gridPane at a specific row and column.
      */
+    @Override
     public Node getCellPane(GridPane gridPane, int row, int col) {
         for (Node node : gridPane.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
