@@ -1,11 +1,12 @@
 /* Estilos generales */
 .root {
+
     -fx-background-color: linear-gradient(to bottom, #ffffff, #ffffff, #ffffff); /* Azul oscuro a más claro */
     -fx-font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
     -fx-background-image: url("../images/background_2_final.png");
-    -fx-background-size: 970 995; /* Ajusta el tamaño para cubrir todo el área */
+    -fx-background-size: 967 890 ; /* Ajusta el tamaño para cubrir todo el área */
     -fx-background-repeat: no-repeat;
-    -fx-background-position: center center; /* Centra la imagen */
+    -fx-background-position: center 72% ; /* Centra la imagen */
 }
 
 /* Declaración de fuentes personalizadas */
@@ -43,15 +44,15 @@
 #colocaLabel {
     -fx-font-family: "PirataOne"; /* Mantener la fuente para coherencia con el título */
     -fx-font-size: 24px; /* Un poco más grande para destacarse como subtítulo */
-    -fx-text-fill: #FFFFFF; /* Blanco puro */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0.5, 0, 1);
+    -fx-text-fill: #F5F5DC; /* Blanco puro */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.95), 12, 0.75, 0, 0);
     -fx-alignment: CENTER; /* Asegura que el texto esté centrado en el label */
 }
 
 #colocaLabel1 {
     -fx-font-family: "P"; /* Mantener la fuente para coherencia con el título */
     -fx-font-size: 32px; /* Un poco más grande para destacarse como subtítulo */
-    -fx-text-fill: #FFFFFF; /* Blanco puro */
+    -fx-text-fill: #2B1B08; /* Blanco puro */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0.5, 0, 1);
     -fx-alignment: CENTER; /* Asegura que el texto esté centrado en el label */
 }
@@ -60,9 +61,9 @@
 #instructionLabel {
     -fx-font-family: "CinzelRegular";
     -fx-text-fill: #e0eff4; /* Azul claro para contraste y legibilidad */
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 5, 0, 1, 1); /* Sombra más suave */
+    -fx-effect: dropshadow(gaussian, black, 5.5, 0.85, 0, 0);
     -fx-wrap-text: true;
-    -fx-font-size: 16px; /* Ajuste de tamaño para mejor legibilidad */
+    -fx-font-size: 17px; /* Ajuste de tamaño para mejor legibilidad */
     -fx-alignment: CENTER; /* Centrar el texto dentro del label */
     -fx-padding: 5px; /* Pequeño padding interno */
 }
@@ -73,8 +74,8 @@
     -fx-border-color: #7b9ed9; /* Un azul más claro para el borde */
     -fx-border-width: 2px;
     -fx-border-radius: 8px; /* Bordes más redondeados */
-    -fx-padding: 20px; /* Más padding para los barcos */
-    -fx-hgap: 15px; /* Mayor espacio horizontal entre barcos */
+    -fx-padding: 15px; /* Más padding para los barcos */
+    -fx-hgap: 8px; /* Mayor espacio horizontal entre barcos */
     -fx-vgap: 15px; /* Mayor espacio vertical entre barcos */
 }
 
@@ -105,11 +106,11 @@
 
 /* Estilo para el botón de jugar */
 .boton-jugar {
-    -fx-background-color: #32CD32; /* Un verde lima más llamativo pero no tan chillón */
+    -fx-background-color: #A0522D; /* Madera tipo caoba suave */
     -fx-text-fill: white;
     -fx-font-size: 18px; /* Texto más grande */
     -fx-font-weight: bold;
-    -fx-padding: 12px 27px; /* Más padding para un botón más grande */
+    -fx-padding: 12px 20px; /* Más padding para un botón más grande */
     -fx-background-radius: 8px; /* Bordes más redondeados */
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 2); /* Sombra más pronunciada */
     -fx-cursor: hand;
@@ -117,10 +118,10 @@
 }
 
 .boton-jugar:hover {
-    -fx-background-color: #2E8B57; /* Verde más oscuro al pasar el ratón */
+    -fx-background-color: #8B4513; /* SaddleBrown al hacer hover */
 }
 
 .boton-jugar:pressed {
-    -fx-background-color: #228B22; /* Verde aún más oscuro al presionar */
+    -fx-background-color: #5C3317; /* Madera más oscura al presionar */
     -fx-translate-y: 2px; /* Mayor desplazamiento al presionar */
 }

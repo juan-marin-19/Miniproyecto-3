@@ -1,7 +1,7 @@
 package com.example.miniproyecto_3.controller;
 import com.example.miniproyecto_3.model.*;
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
-import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileReader;
+import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileHandler;
 import com.example.miniproyecto_3.view.Figures;
 import com.example.miniproyecto_3.view.GameStage;
 import javafx.fxml.FXML;
@@ -18,69 +18,115 @@ import com.example.miniproyecto_3.model.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Class that manages the ship placement and switches to the game window.
+ */
 public class PlacementController {
 
     private Player player;
-    private boolean dragging = false;
+    private boolean dragging = false; // True if a ship is being dragged false otherwise; used to know if its posible to rotate a ship
     private boolean rotated = false; // rotated; vertical = false ; horizontal = true
     private boolean resetFinalCoords = false;
     private Board playerBoard;
-    private Group currentShipVisual = null;  // referencia de versionShip, para manejar el cambio de orientación
-    private List<int[]> shipFinalCoords = new ArrayList<>(); // lista para guardar las coordenadas correctas de un ship
+    private Group currentShipVisual = null; // Reference to manage a ships visual placement when its rotated
+    private List<int[]> shipFinalCoords = new ArrayList<>(); // List of arrays int use to store the ships coordinates
     private int numShipsPlaced = 0;
-    private SeriazableFileHandler seriazableFileHandler;
-    private PlainTextFileReader plainTextFileReader;
+    private final SeriazableFileHandler seriazableFileHandler;
+    private final PlainTextFileHandler plainTextFileHandler;
 
 
     @FXML
-    private AnchorPane rootPane; // AnchorPane contenedor de grid y shipPallete
+    private AnchorPane rootPane;
 
     @FXML
-    private GridPane playerGrid;  // grid para los barcos
+    private GridPane playerGrid;
 
     @FXML
-    private FlowPane shipPalette; // Contenedor para los barcos
+    private FlowPane shipPalette;
 
     @FXML
-    private BorderPane borderPane;  // contenedor de todos
+    private BorderPane borderPane;  // Main layout
 
 
+    /**
+     * Initializes the objects that handle plain text and serialized files.
+     */
     public PlacementController() {
-        this.plainTextFileReader = new PlainTextFileReader();
+        this.plainTextFileHandler = new PlainTextFileHandler();
         this.seriazableFileHandler = new SeriazableFileHandler();
     }
 
 
     /**
-     * CARGO las figuras, y las funciones para el movimiento, dibujo el grid
+     * Loads the ship shapes, draws the grid, creates the player board,
+     * and handles the event to change ship orientation.
+     *
+     * @see #drawGrid() 
+     * @see #loadShip(Group, int)
      */
     public void initialize() {
         this.playerBoard = new Board(10, 10);
 
-        //FIJA LA PANTALLA PARA QUE NO SE VAYA HACIA ABAJO
-        rootPane.setMinHeight(400);
-        rootPane.setMaxHeight(400);
-        rootPane.setPrefHeight(400);
+        //Set a fixed height to avoid errors.
+        rootPane.setMinHeight(500);
+        rootPane.setMaxHeight(600);
+        rootPane.setPrefHeight(600);
 
 
-        //CÓDIGO PARA MANEJAR EL CAMBIO DE ORIENTACIÓN CON LA LETRA G
+        //Code that handles the orientation change
         borderPane.setOnKeyPressed(event -> {
             if (dragging && event.getCode() == KeyCode.G && currentShipVisual != null) {
-                if (!rotated) {
-                    currentShipVisual.setRotate(270);
-                    rotated = true;
-                    for (Node node : playerGrid.getChildren()) {
-                        if (node instanceof StackPane) {
-                            node.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
-                        }
+                rotated = !rotated;
+                currentShipVisual.setRotate(rotated ? 270 : 0);
+
+                // Color all the grid back to normal.
+                for (Node node : playerGrid.getChildren()) {
+                    if (node instanceof StackPane) {
+                        node.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
+                    }
+                }
+
+
+                //Code to make sure the ship is placed correctly when rotated even if it's not dragged after it's been so
+                Bounds shipBounds = currentShipVisual.localToScene(currentShipVisual.getBoundsInLocal());
+                boolean isVertical = !rotated;
+
+                double refX, refY;
+                if (isVertical) {
+                    if (shipFinalCoords.size() == 1) {
+                        refX = shipBounds.getMinX() + shipBounds.getWidth() / 2;
+                        refY = shipBounds.getMinY() + shipBounds.getHeight() / 2.1;
+                    } else {
+                        refX = shipBounds.getMinX() + shipBounds.getWidth() / 2;
+                        refY = shipBounds.getMinY() + shipBounds.getHeight() / 2;
                     }
                 } else {
-                    currentShipVisual.setRotate(0);
-                    rotated = false;
-                    for (Node node : playerGrid.getChildren()) {
-                        if (node instanceof StackPane) {
-                            node.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
+                    if (shipFinalCoords.size() == 1) {
+                        refX = shipBounds.getMinX() + shipBounds.getWidth() / 2.1;
+                        refY = shipBounds.getMinY() + shipBounds.getHeight() / 2;
+                    } else {
+                        refX = shipBounds.getMinX() + shipBounds.getWidth() / 2;
+                        refY = shipBounds.getMinY() + shipBounds.getHeight() / 2;
+                    }
+                }
+
+                for (Node node : playerGrid.getChildren()) {
+                    if (node instanceof StackPane) {
+                        Bounds cellBounds = node.localToScene(node.getBoundsInLocal());
+                        if (cellBounds.contains(refX, refY)) {
+                            Integer col = GridPane.getColumnIndex(node);
+                            Integer row = GridPane.getRowIndex(node);
+                            if (col == null) col = 0;
+                            if (row == null) row = 0;
+                            List<int[]> newCoords = playerBoard.getCoordinatesForShip(row, col, shipFinalCoords.size(), isVertical);
+                            if (!newCoords.isEmpty()) {
+                                shipFinalCoords = newCoords;
+                                resetFinalCoords = false;
+                            } else {
+                                resetFinalCoords = true;
+                                shipFinalCoords.clear();
+                            }
+                            break;
                         }
                     }
                 }
@@ -88,98 +134,84 @@ public class PlacementController {
         });
 
 
-
-        // creo las figuras y las añado a una lista de figuras para poder quitarlas luego
-        // version 1 = fragata, 2= destructor
-
-        Group fragata1 = Figures.Fragata(Color.GRAY, Color.BLACK);
-        Group fragata2 = Figures.Fragata(Color.GRAY, Color.BLACK);
-        Group fragata3 = Figures.Fragata(Color.GRAY, Color.BLACK);
-        Group fragata4 = Figures.Fragata(Color.GRAY, Color.BLACK);
-        Group destructor1 = Figures.Destructor(Color.GRAY, Color.BLACK);
-        Group destructor2 = Figures.Destructor(Color.GRAY, Color.BLACK);
-        Group destructor3 = Figures.Destructor(Color.GRAY, Color.BLACK);
+        Group frigate1 = Figures.frigate(Color.GRAY, Color.BLACK);
+        Group frigate2 = Figures.frigate(Color.GRAY, Color.BLACK);
+        Group frigate3 = Figures.frigate(Color.GRAY, Color.BLACK);
+        Group frigate4 = Figures.frigate(Color.GRAY, Color.BLACK);
+        Group destroyer1 = Figures.destroyer(Color.GRAY, Color.BLACK);
+        Group destroyer2 = Figures.destroyer(Color.GRAY, Color.BLACK);
+        Group destroyer3 = Figures.destroyer(Color.GRAY, Color.BLACK);
         Group submarine1 = Figures.Submarine(Color.GRAY, Color.BLACK);
         Group submarine2 = Figures.Submarine(Color.GRAY, Color.BLACK);
-        Group portaaviones = Figures.Portaaviones(Color.GRAY, Color.BLACK);
+        Group aircraftCarrier = Figures.aircraftCarrier(Color.GRAY, Color.BLACK);
 
-        //Rectangle rect = new Rectangle(0, 0, 42, 183);
-       // Group rectGroup = new Group(rect);
+        drawGrid();
 
-        // Dibujar el grid añadiendo stackPanes en cada celda del playerGrid
-        drawBoard();
-
-        //cargo las figuras y el código de su movimiento, (version = size)
-
-        loadShipPalette(fragata1, 1);
-        loadShipPalette(fragata2, 1);
-        loadShipPalette(fragata3, 1);
-        loadShipPalette(fragata4, 1);
-        loadShipPalette(destructor1, 2);
-        loadShipPalette(destructor2, 2);
-        loadShipPalette(destructor3, 2);
-        loadShipPalette(submarine1, 3);
-        loadShipPalette(submarine2, 3 );
-        loadShipPalette(portaaviones, 4);
+        loadShip(frigate1, 1);
+        loadShip(frigate2, 1);
+        loadShip(frigate3, 1);
+        loadShip(frigate4, 1);
+        loadShip(destroyer1, 2);
+        loadShip(destroyer2, 2);
+        loadShip(destroyer3, 2);
+        loadShip(submarine1, 3);
+        loadShip(submarine2, 3 );
+        loadShip(aircraftCarrier, 4);
 
 
     }
 
 
     /**
-     * Cargo los barcos, manejo el movimiento de los barcos, su posición visual, y lo coloco en el modelo.
+     * Adds the ship figures to the flowPane, deals with their movement on the screen,
+     * and manages their correct position in both the grid and model board.
+     *
+     * @param shipVersion the ship figure
+     * @param version the ship size and number of cells it occupies
+     *
+     * @see #getCellPane(GridPane, int, int)
      */
-    private void loadShipPalette(Group shipVersion,int version){
+    private void loadShip(Group shipVersion, int version) {
 
-        //escalamos y colocamos el barco en la paleta de barcos
         shipVersion.setScaleX(0.78);
         shipVersion.setScaleY(0.78);
-
         shipPalette.getChildren().add(shipVersion);
 
-
-        // Guardamos la posición original para poder solo colorear las celdas del barco
+        // Save the highlighted cells to color them later
         final List<StackPane> previouslyHighlighted = new ArrayList<>();
 
-
-        //PRESIONO UN SHIP
+        // Press a ship
         shipVersion.setOnMousePressed(event -> {
 
-            //ajustar la orientación visual
+            // adjust visual orientation
             dragging = true;
             currentShipVisual = shipVersion;
 
-
-            // Mover el barco del root del flowPane al anchorPane para que se vea encima
-
+            // Move the ship from the FlowPane root to the AnchorPane so it appears on top
             Bounds shipBounds = shipVersion.localToScene(shipVersion.getBoundsInLocal());
 
             shipPalette.getChildren().remove(shipVersion);
             rootPane.getChildren().add(shipVersion);
 
-            // Colocar el barco en la posición donde fue presionado (relativo a la escena)
+            // Place the ship at the position where it was clicked (relative to the scene)
             shipVersion.setLayoutX(shipBounds.getMinX());
             shipVersion.setLayoutY(shipBounds.getMinY());
         });
 
-
-        //MOVIMIENTO SOSTENIDO (AQUÍ SE COLOCA EL BARCO)
+        // Dragging a ship
         shipVersion.setOnMouseDragged(event -> {
 
-            shipVersion.toFront();         // lo pone encima de los demás
+            shipVersion.toFront();
 
-            //Ocultamos el cursor
             rootPane.setCursor(Cursor.NONE);
 
-            // Obtener el centro del barco en coordenadas de escena
+            // Get the ship center in scene coordinates
             Bounds shipBounds = shipVersion.localToScene(shipVersion.getBoundsInLocal());
 
-            //Encontramos la orientación actual del barco(cambiar por rotated)
+            // Detect current ship orientation (based on rotation)
             boolean isVertical = !(Math.abs(shipVersion.getRotate() % 180) == 90);
 
-
-            // Actualizar posición del barco al moverlo, visualmente se mueve aproximadamente desde el centro y
-            // --- Ajuste visual del barco según orientación ---
+            // Update ship position visually, moved approximately from the center
             if (version == 3 ) {
                 if (isVertical) {
                     shipVersion.setLayoutX(event.getSceneX() - shipVersion.getBoundsInLocal().getWidth() / 1.8);
@@ -214,28 +246,26 @@ public class PlacementController {
                 }
             }
 
-
-            // Limpiar celdas anteriores
+            // Color the cells back to normal
             for (StackPane cell : previouslyHighlighted) {
                 cell.setStyle("-fx-border-color: black; -fx-background-color: lightblue;");
             }
-             previouslyHighlighted.clear();
-
+            previouslyHighlighted.clear();
 
             double referencePointX;
             double referencePointY;
 
-            //calculo la posición de referencia para calcular los cuadros que ocupa el barco
+            // Calculate the reference point to determine which cells the ship occupies
             if (isVertical) {
                 if (version == 1) {
                     referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2;
                     referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 1.96;
                 } else if (version == 3) {
                     referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2;
-                    referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2.3;
+                    referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2.2;
                 } else if (version == 4) {
-                    referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2;// 2.416
-                    referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2.49;
+                    referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2;
+                    referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2.37;
                 } else {
                     referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2;
                     referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2.1;
@@ -245,10 +275,10 @@ public class PlacementController {
                     referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 1.96;
                     referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2;
                 } else if (version == 3) {
-                    referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2.3;
+                    referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2.35;
                     referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2;
                 } else if (version == 4) {
-                    referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2.49;
+                    referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2.55;
                     referencePointY = (shipBounds.getMinY() + shipBounds.getMaxY()) / 2;
                 } else {
                     referencePointX = (shipBounds.getMinX() + shipBounds.getMaxX()) / 2.1;
@@ -256,30 +286,26 @@ public class PlacementController {
                 }
             }
 
-
-
-
-            // CÓDIGO PARA COLOCAR LA VISTA DE DONDE SE COLOCA EL BARCO Y PARA AÑADIRLO AL MODELO Y LUEGO HACER QUE SE POSICIONE
+            // Code to highlight the placement and store coordinates if valid
             for (Node node : playerGrid.getChildren()) {
                 if (node instanceof StackPane) {
                     Bounds cellBounds = node.localToScene(node.getBoundsInLocal());
 
-                    //obtengo la col y row de la celda que contiene el punto de referencia
+                    // Get row and column of the cell that contains the reference point
                     if (cellBounds.contains(referencePointX, referencePointY)) {
                         Integer col = GridPane.getColumnIndex(node);
                         Integer row = GridPane.getRowIndex(node);
 
-                        // Evitar null (puede pasar en celdas sin set explícito)
+                        // Avoid nulls (may occur in cells without explicit set)
                         if (col == null) col = (Integer) 0;
                         if (row == null) row =  (Integer) 0;
 
-                        // Obtener coordenadas desde el modelo de los cuadros que ocupan el barco (se guardan en un array 2d de int)
+                        // Get coordinates from model and store them
                         List<int[]> shipCoords = playerBoard.getCoordinatesForShip(row, col, version, isVertical);
-                        //guardarlo para usarlo luego si no está vacío es decir, si encuentra lugar
                         shipFinalCoords = shipCoords;
-                        //veo si tengo que resetear las coordenadas por si no encuentra las encuentra por estar fuera de rango o ya haber un barco
                         resetFinalCoords = shipCoords.isEmpty();
-                        // Verificar si hay espacio suficiente y encontrar las casillas posición para pintar
+
+                        // Highlight if there's space
                         if (!shipCoords.isEmpty()) {
                             for (int[] coord : shipCoords) {
                                 int r = coord[0];
@@ -297,8 +323,8 @@ public class PlacementController {
                                 }
                             }
                         }
-                        break; // Ya encontramos la celda central
-                    }else{
+                        break; // Already found the center cell
+                    } else {
                         resetFinalCoords = true;
                     }
                 }
@@ -308,102 +334,72 @@ public class PlacementController {
 
         });
 
-
-        //SUELTO UN SHIP
+        // Drop a ship
         shipVersion.setOnMouseReleased(event -> {
 
             if(resetFinalCoords){
                 shipFinalCoords = new ArrayList<>();
             }
-            // Por ahora, siempre vuelve a la paleta
 
-
-            // El arreglo no esta vacío entonces hay que colocar el barco donde nos indica las coordenadas
             if(!shipFinalCoords.isEmpty()) {
 
-                //añado el barco al arreglo de cells en el modelo board.
+                // Add the ship to the model board
                 playerBoard.placeShip(shipFinalCoords,rotated);
 
-                //add the ship to the grid visually
+                // Add ship to the grid visually
                 System.out.println(shipFinalCoords.get(0)[0] + " " + shipFinalCoords.get(0)[1]);
 
-                Node referenceCell = getCellPane(playerGrid,shipFinalCoords.get(0)[0] , shipFinalCoords.get(0)[1]);
+                Node referenceCell = getCellPane(playerGrid,shipFinalCoords.get(0)[0], shipFinalCoords.get(0)[1]);
                 Bounds cellBounds = referenceCell.localToScene(referenceCell.getBoundsInLocal());
                 double pivotX = cellBounds.getWidth() / 2;
                 double pivotY = cellBounds.getHeight() / 2;
 
                 if(!rotated){
-                    if (version==1){
+                    if (version == 1){
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-85);
-                    }
-                    else if (version==2) {
+                        shipVersion.setLayoutY(cellBounds.getMinY()-93);
+                    } else if (version == 2) {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-85);
-                    }
-                    else if (version==3) {
+                        shipVersion.setLayoutY(cellBounds.getMinY()-97);
+                    } else if (version == 3) {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
-                    }
-                    else{
+                        shipVersion.setLayoutY(cellBounds.getMinY()-101);
+                    } else {
                         shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                        shipVersion.setLayoutY(cellBounds.getMinY()-100);
+                        shipVersion.setLayoutY(cellBounds.getMinY()-106);
                     }
-
-
-                }else{
+                } else {
                     shipVersion.getTransforms().add(new Rotate(270, pivotX, pivotY));
                     shipVersion.setLayoutX(cellBounds.getMinX()-4.5);
-                    
-                    if(version == 1) {
-                        shipVersion.setLayoutY(cellBounds.getMinY() - 75);
-                    }
-                    else if(version==2) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-80);
-                    }
-                    else if(version==3) {
-                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
-                    }
-                    else{
-                        shipVersion.setLayoutY(cellBounds.getMinY()-90);
-                    }
 
+                    if (version == 1) {
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 88);
+                    } else if (version == 2) {
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 92);
+                    } else if (version == 3) {
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 96);
+                    } else {
+                        shipVersion.setLayoutY(cellBounds.getMinY() - 103);
+                    }
                 }
 
                 shipVersion.setDisable(true);
                 numShipsPlaced++;
-            }
-            else{
-                //resets because it couldn't be placed
+            } else {
+                // Reset because it couldn't be placed
                 rootPane.getChildren().remove(shipVersion);
-                shipPalette.getChildren().remove(shipVersion); // por si quedó por ahí
+                shipPalette.getChildren().remove(shipVersion);
                 shipPalette.getChildren().add(shipVersion);
             }
 
-
-
-
-
             // RESET
             resetFinalCoords = false;
-
             shipFinalCoords = new ArrayList<>();
-
             rootPane.setCursor(Cursor.DEFAULT);
-
-            for(Node node: playerGrid.getChildren()){
-                if(node instanceof StackPane){
-                    node.setStyle("-fx-border-color: black; -fx-background-color: white;");
-                }
-            }
-
-
-            //devolver barco orientación vertical
             dragging = false;
             currentShipVisual = null;
 
             if (rotated) {
-                // Devuelve a vertical
                 shipVersion.setRotate(0);
                 rotated = false;
             }
@@ -411,23 +407,21 @@ public class PlacementController {
             for(Node n: playerGrid.getChildren()){
                 if(n instanceof StackPane){
                     n.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: lightblue;");
-
                 }
             }
 
         });
 
-
     }
 
 
     /**
-     * Cargo los stackPane al gridPane donde van los barcos.
-     * */
-    private void drawBoard() {
+     * Loads the StackPane cells into the GridPane to manage the ship positions.
+     */
+    private void drawGrid() {
         for (int i = 1; i < 11; i++) {
             for (int j = 1; j < 11; j++) {
-                // agrega un stackPane para poder superponer los barcos
+                //StackPane allows to place figures upon it
                 StackPane cell = new StackPane();
                 cell.setPrefSize(100, 100);
                 cell.setStyle("-fx-border-color: black; -fx-border-width: 1px; -fx-background-color: lightblue;");
@@ -443,8 +437,14 @@ public class PlacementController {
 
 
     /**
-     * Obtengo la celda de referencia para colocar el barco una vez se soltó.(HACER HERENCIA CLASE ADAPTADORA)
-     * */
+     * Gets the reference cell from the GridPane to help place the ship when it is released.
+     *
+     * @param gridPane the container where ships are placed
+     * @param row the row of the node to find
+     * @param col the column of the node to find
+     *
+     * @return the Node object inside the GridPane
+     */
     public Node getCellPane(GridPane gridPane, int row, int col) {
         for (Node node : gridPane.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
@@ -464,56 +464,59 @@ public class PlacementController {
 
 
     /**
-     * Continuo el juego cuando se coloquen los barcos, paso el jugador, y el board del modelo.
+     * Continues the game after placing all ships.
+     * sends  the player to the GameController, updates the plain text files,
+     * and creates the serialized files for both boards.
+     *
+     * @param event action event from the button
      */
     @FXML
-    public void handleClickContinue(javafx.event.ActionEvent event){
-        if(numShipsPlaced==10){
+    public void handleClickContinue(javafx.event.ActionEvent event) {
+        if (numShipsPlaced == 10) {
 
             GameStage gameStage = new GameStage();
-            gameStage.GameStage1(); // Esto carga el tablero de juego
+            gameStage.gameControllerStage(); // This loads the game board
 
             GameController controller = gameStage.getGameController();
 
             if (controller != null) {
 
-                /*leo el archivo plano y cambio el valor ableToContinue para poder continuar(botón continuar welcomeStage)
-             pq significa en este punto ya hay un board para jugar
-             */
-
+            /* Read the plain text file and update the value of ableToContinue
+               (used by the "continue" button in WelcomeStage),
+               because at this point the board is ready to play. */
                 String content = player.getNickname() + "," + player.getSunkenShips() + "," + "true";
-                plainTextFileReader.writeToFile("player_data.csv", content);
+                plainTextFileHandler.writeToFile("player_data.csv", content);
 
-                /*Reseteo el num de barcos hundidos de machine_data
-                * */
-                plainTextFileReader.writeToFile("machine_data.csv", "machine"+","+0+ ","+"true" );
+                /* Reset the number of sunken ships for machine_data */
+                plainTextFileHandler.writeToFile("machine_data.csv", "machine" + "," + 0 + "," + "true");
 
+                // Serialize board to be used in GameController
+                seriazableFileHandler.serialize("player_board.ser", playerBoard);
 
-                //serializo board para poder usarlo en gameController
-                seriazableFileHandler.serialize("player_board.ser",playerBoard);
-
-                Machine machine = new Machine(0);
-                machine.fillBoard(); // llenar aleatoriamente su board
-                seriazableFileHandler.serialize("machine_board.ser", machine.getBoard()); // o solo machine.getBoard()
+                Machine machine = new Machine();
+                machine.fillBoard(); // fill its board randomly
+                seriazableFileHandler.serialize("machine_board.ser", machine.getBoard()); // or just machine.getBoard()
 
                 controller.setPlayer(player);
                 controller.startGame();
 
-
             } else {
-                System.err.println("GameController es null");
+                System.err.println("GameController is null");
             }
-        } else {
-            System.out.println("aún no has colocado todos los barcos");
-        }
 
+        } else {
+            System.out.println("you have not placed all the ships yet");
+        }
     }
 
 
 
+
     /**
-     * Constructor para el objeto jugador donde se guardan datos del jugador
-     * */
+     * Sets the player object which stores player information.
+     *
+     * @param player object that stores player data.
+     */
     public void setPlayer(Player player){
             this.player = player;
             System.out.println(player.getSunkenShips());

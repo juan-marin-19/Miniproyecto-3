@@ -7,9 +7,9 @@
 
 <AnchorPane prefHeight="466.0" prefWidth="699.0" styleClass="root" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.miniproyecto_3.controller.WelcomeController">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="213.0" layoutY="282.0" prefHeight="47.0" prefWidth="285.0" styleClass="label" text="Nombre de usuario:" textOverrun="CLIP" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="213.0" layoutY="282.0" prefHeight="47.0" prefWidth="285.0" styleClass="label" text="Username:" textOverrun="CLIP" />
       <TextField fx:id="nickname" layoutX="262.0" layoutY="330.0" prefHeight="11.0" prefWidth="187.0" styleClass="text-field" />
-      <Button layoutX="364.0" layoutY="381.0" onAction="#handleClickPlay" prefHeight="25.0" prefWidth="142.0" styleClass="button" text="Jugar" textAlignment="CENTER" />
-      <Button layoutX="207.0" layoutY="381.0" mnemonicParsing="false" onAction="#handleClickContinue" prefHeight="25.0" prefWidth="142.0" text="Continuar" />
+      <Button layoutX="364.0" layoutY="381.0" onAction="#handleClickPlay" prefHeight="25.0" prefWidth="142.0" styleClass="button" text="Play" textAlignment="CENTER" />
+      <Button layoutX="207.0" layoutY="381.0" mnemonicParsing="false" onAction="#handleClickContinue" prefHeight="25.0" prefWidth="142.0" text="Continue" />
    </children>
 </AnchorPane>
