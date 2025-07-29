@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * Class to manage the machine's behavior.
  */
-public class Machine implements Serializable {
+public class Machine implements Serializable, IMachine {
 
     private Board board;
 
@@ -29,6 +29,7 @@ public class Machine implements Serializable {
      *
      * @return the player's board after the machine's move
      */
+    @Override
     public Board makeMove(Board playerBoard) {
 
             boolean shot= false;
@@ -58,6 +59,7 @@ public class Machine implements Serializable {
     /**
      * Fills the machines board with the correct ships.
      */
+    @Override
     public void fillBoard(){
         int[] shipLengths = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
         Random random = new Random();
@@ -82,6 +84,7 @@ public class Machine implements Serializable {
     /**
      * @return machines board
      */
+    @Override
     public Board getBoard() {
         return board;
     }
@@ -90,6 +93,7 @@ public class Machine implements Serializable {
     /**
      * @param board the board to set for the machine
      */
+    @Override
     public void setBoard(Board board) {
         this.board = board;
     }

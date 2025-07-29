@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * Class that stores the player's information, including their nickname and number of sunken ships.
  */
-public class Player {
+public class Player implements IPlayer{
         private final String nickname;
         private int sunkenShips;
 
@@ -26,6 +26,7 @@ public class Player {
     /**
      * @return the nickname of the player
      */
+    @Override
     public String getNickname() {
             return nickname;
         }
@@ -33,6 +34,7 @@ public class Player {
     /**
      * @return the number of ships sunk by the player
      */
+    @Override
     public int getSunkenShips() {
             return sunkenShips;
         }
@@ -42,6 +44,7 @@ public class Player {
      *
      * @param sunkenShips the new number of sunken ships
      */
+    @Override
     public void setSunkenShips(int sunkenShips) {
             this.sunkenShips = sunkenShips;
         }
