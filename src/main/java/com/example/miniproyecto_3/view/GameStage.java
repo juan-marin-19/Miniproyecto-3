@@ -17,7 +17,7 @@ import java.io.InputStream;
  * It can load both the placement view and the gameplay view.
  * It also handles loading controllers and applying styles.
  */
-public class GameStage extends Stage {
+public class GameStage extends Stage implements IGameStage {
     private GameController gameController;
     private Parent root;
     private PlacementController placementController;
@@ -32,6 +32,7 @@ public class GameStage extends Stage {
      * Loads the game view window where the player plays the main part of the game.
      * Sets up the controller, scene, styles and icon.
      */
+    @Override
     public void gameControllerStage() {
         // Close any previous instance
         if (GameStageHolder.INSTANCE != null) {
@@ -70,6 +71,7 @@ public class GameStage extends Stage {
      * Loads the ship placement window.
      * Sets up the controller, scene, styles, fonts and icon.
      */
+    @Override
     public void placementControllerStage(){
         // Close any previous instance
         if (GameStageHolder.INSTANCE != null) {
@@ -119,6 +121,7 @@ public class GameStage extends Stage {
      *
      * @return the GameController instance
      */
+    @Override
     public GameController getGameController() {
         return gameController;
     }
@@ -128,6 +131,7 @@ public class GameStage extends Stage {
      *
      * @return the PlacementController instance
      */
+    @Override
     public PlacementController getPlacementController(){return placementController;}
 
     private static class GameStageHolder {
