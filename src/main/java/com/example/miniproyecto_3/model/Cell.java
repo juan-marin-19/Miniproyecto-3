@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Class that models a cell in the grid where a ship can be placed.
  */
-public class Cell implements Serializable {
+public class Cell implements Serializable, ICell {
 
     /**
      * Indicates whether the cell has already been shot
@@ -34,6 +34,7 @@ public class Cell implements Serializable {
     /**
      * @return true if there is a ship in the cell, false otherwise.
      */
+    @Override
     public boolean isOccupied() {
         return occupyingShip != null;
     }
@@ -42,6 +43,7 @@ public class Cell implements Serializable {
     /**
      * @return true if the cell has been shot, false otherwise.
      */
+    @Override
     public boolean isHit() {
         return isHit;
     }
@@ -50,6 +52,7 @@ public class Cell implements Serializable {
     /**
      * @return the ship occupying the cell, or null if there is none.
      */
+    @Override
     public Ship getShip() {
         return occupyingShip;
     }
@@ -60,6 +63,7 @@ public class Cell implements Serializable {
      *
      * @param ship a ship object
      */
+    @Override
     public void placeShip(Ship ship) {
         this.occupyingShip = ship;
     }
@@ -68,6 +72,7 @@ public class Cell implements Serializable {
     /**
      * Registers a shot in the cell and also on the ship if there is one.
      */
+    @Override
     public void hit() {
         this.isHit = true;
         if (occupyingShip != null) {

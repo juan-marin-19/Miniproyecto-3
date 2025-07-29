@@ -8,7 +8,7 @@ import java.io.Serializable;
  * and some helper auxiliar variables for game logic and visuals.
  *
  */
-public class Ship implements Serializable {
+public class Ship implements Serializable, IShip {
 
     /**
      * Orientation of the ship: true for horizontal, false for vertical.
@@ -58,24 +58,28 @@ public class Ship implements Serializable {
     /**
      * @return the size of the ship
      */
+    @Override
     public int getSize() { return size; }
 
 
     /**
      * @return the orientation of the ship (true = horizontal, false = vertical)
      */
+    @Override
     public boolean getOrientation() { return orientation; }
 
 
     /**
      * @return the number of remaining lives (parts that haven’t been hit yet)
      */
+    @Override
     public int getLives() {return lives; }
 
 
     /**
      * @return the visual helper aux used in GameController
      */
+    @Override
     public boolean getAux() { return aux; }
 
 
@@ -84,12 +88,14 @@ public class Ship implements Serializable {
      *
      * @param aux true if the ship has already been drawn
      */
+    @Override
     public void setAux(boolean aux) { this.aux = aux; }
 
 
     /**
      * Registers a hit on the ship, decreasing its remaining lives by one.
      */
+    @Override
     public void registerHit(){
         this.lives--;
     }
@@ -98,6 +104,7 @@ public class Ship implements Serializable {
     /**
      * @return true if the ship has already been counted as sunken
      */
+    @Override
     public boolean isAlreadyCounted() {
         return alreadyCounted;
     }
@@ -108,6 +115,7 @@ public class Ship implements Serializable {
      *
      * @param alreadyCounted true if already counted
      */
+    @Override
     public void setAlreadyCounted(boolean alreadyCounted) {
         this.alreadyCounted = alreadyCounted;
     }
