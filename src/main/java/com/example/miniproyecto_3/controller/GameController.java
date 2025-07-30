@@ -534,12 +534,15 @@ public class GameController extends AdapterControlller implements IGameControlle
                 node.setDisable(true);
             }
         }
-
         Platform.runLater(() -> {
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             alert.setTitle("Game Over");
             alert.setHeaderText(null);
             alert.setContentText(message);
+
+            // 👉 Cambiar tamaño del texto
+            alert.getDialogPane().setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
             alert.showAndWait();
         });
     }
