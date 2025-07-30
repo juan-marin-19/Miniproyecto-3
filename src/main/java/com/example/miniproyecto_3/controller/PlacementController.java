@@ -4,16 +4,19 @@ import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHan
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileHandler;
 import com.example.miniproyecto_3.view.Figures;
 import com.example.miniproyecto_3.view.GameStage;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import com.example.miniproyecto_3.model.Player;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.List;
 /**
  * Class that manages the ship placement and switches to the game window.
  */
-public class PlacementController implements IPlacementController {
+public class PlacementController  extends AdapterControlller implements IPlacementController {
 
     private Player player;
     private boolean dragging = false; // True if a ship is being dragged false otherwise; used to know if its posible to rotate a ship
@@ -46,6 +49,9 @@ public class PlacementController implements IPlacementController {
 
     @FXML
     private BorderPane borderPane;  // Main layout
+
+    @FXML
+    private Label messageLabel;
 
 
     /**
@@ -436,32 +442,6 @@ public class PlacementController implements IPlacementController {
         }
 
 
-    /**
-     * Gets the reference cell from the GridPane to help place the ship when it is released.
-     *
-     * @param gridPane the container where ships are placed
-     * @param row the row of the node to find
-     * @param col the column of the node to find
-     *
-     * @return the Node object inside the GridPane
-     */
-    public Node getCellPane(GridPane gridPane, int row, int col) {
-        for (Node node : gridPane.getChildren()) {
-            Integer rowIndex = GridPane.getRowIndex(node);
-            Integer colIndex = GridPane.getColumnIndex(node);
-
-            // default to 0 if null
-            int r = (rowIndex == null) ? 0 : rowIndex;
-            int c = (colIndex == null) ? 0 : colIndex;
-
-            if (r == row && c == col) {
-                return node;
-            }
-        }
-        return null; // not found
-
-    }
-
 
     /**
      * Continues the game after placing all ships.
@@ -506,9 +486,15 @@ public class PlacementController implements IPlacementController {
 
         } else {
             System.out.println("you have not placed all the ships yet");
+
+            messageLabel.setText("You haven't placed all the ships");
+            messageLabel.setVisible(true);
+
+            PauseTransition pausa = new PauseTransition(Duration.seconds(3));
+            pausa.setOnFinished(e -> messageLabel.setVisible(false));
+            pausa.play();
         }
     }
-
 
 
 

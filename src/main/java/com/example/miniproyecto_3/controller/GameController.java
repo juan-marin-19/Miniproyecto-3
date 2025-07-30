@@ -1,13 +1,14 @@
 package com.example.miniproyecto_3.controller;
+
 import com.example.miniproyecto_3.exceptions.DataLoadException;
 import com.example.miniproyecto_3.exceptions.InvalidMoveException;
 import com.example.miniproyecto_3.model.*;
-
 import com.example.miniproyecto_3.model.planeSerializableFiles.SeriazableFileHandler;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileHandler;
 import com.example.miniproyecto_3.view.Figures;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -19,17 +20,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
-
 /**
  * Class that controls the game window.
  */
-public class GameController  implements IGameController {
+public class GameController extends AdapterControlller implements IGameController {
 
     @FXML
     private GridPane playerGrid;
@@ -262,13 +261,10 @@ public class GameController  implements IGameController {
 
 
     /**
-     * Method with an event handler that checks if a cell was clicked and acts accordingly,
-     * handling the players shot, if it hits a ship, destroys it or if it hits nothing, machine will shoot.
+     * Adds event handlers to each button in the opponent's grid.
      *
+     * @see PlayerShotHandler
      * @see #handleMachineShot()
-     * @see #updateGridVisuals(Board, GridPane)
-     * @see #updateSunkenShipsCount(Board, boolean)
-     * @see #saveGame()
      */
     @Override
     public void handlePlayerShot() {
@@ -276,33 +272,73 @@ public class GameController  implements IGameController {
             if (node instanceof Button) {
                 int row = GridPane.getRowIndex(node) - 1;
                 int col = GridPane.getColumnIndex(node) - 1;
-                node.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                    try {
-                        if (row < 0 || row >= 10 || col >= 10 || col < 0) {
-                            throw new InvalidMoveException("Coordinates out of board");
-                        }
-                        Cell targetCell = machine.getBoard().getCell(row, col);
+                node.addEventHandler(MouseEvent.MOUSE_CLICKED, new PlayerShotHandler(row, col, node));
+            }
+        }
+    }
 
-                        if (targetCell.isHit()) {
-                            saveGame();
-                            throw new InvalidMoveException(" You already shot this cell");
-                        }
+    /**
+     * Inner class that manages the player's shot on the enemy grid.
+     * It validates the shot, updates the board and visuals,
+     * and triggers the machine's turn if the shot is a miss.
+     *
+     * @see #handleMachineShot()
+     */
+    public class PlayerShotHandler implements EventHandler<MouseEvent> {
+        private final int row;
+        private final int col;
+        private final Node node;
 
-                        targetCell.hit();
-                        updateGridVisuals(machine.getBoard(), mainGrid);
-                        updateSunkenShipsCount(machine.getBoard(), false);
-                        node.setDisable(false);
-                        saveGame();
+        /**
+         * Creates a new PlayerShotHandler.
+         *
+         * @param row  row index of the clicked cell
+         * @param col  column index of the clicked cell
+         * @param node graphical node (button) representing the cell
+         */
+        public PlayerShotHandler(int row, int col, Node node) {
+            this.row = row;
+            this.col = col;
+            this.node = node;
+        }
 
-                        // Analyze whether it's a hit or miss:
-                        if (!targetCell.isOccupied()) {
-                            handleMachineShot(); // If it's a hit or sunk, player continues (no machine shot)
-                        }
+        /**
+         * Handles the player's shot action.
+         * If the cell is valid and not previously hit,
+         * the board is updated and the machine plays if it was a miss.
+         *
+         * @param e mouse event triggered by the click
+         *
+         * @see #handleMachineShot()
+         * @see #updateGridVisuals(Board, GridPane)
+         * @see #updateSunkenShipsCount(Board, boolean)
+         * @see #saveGame()
+         */
+        @Override
+        public void handle(MouseEvent e) {
+            try {
+                if (row < 0 || row >= 10 || col < 0 || col >= 10) {
+                    throw new InvalidMoveException("Coordinates out of board");
+                }
+                Cell targetCell = machine.getBoard().getCell(row, col);
 
-                    } catch (InvalidMoveException ex) {
-                        System.out.println("Invalid move: " + ex.getMessage());
-                    }
-                });
+                if (targetCell.isHit()) {
+                    saveGame();
+                    throw new InvalidMoveException("You already shot this cell");
+                }
+
+                targetCell.hit();
+                updateGridVisuals(machine.getBoard(), mainGrid);
+                updateSunkenShipsCount(machine.getBoard(), false);
+                node.setDisable(false);
+                saveGame();
+
+                if (!targetCell.isOccupied()) {
+                    handleMachineShot();
+                }
+
+            } catch (InvalidMoveException ex) {
+                System.out.println("Invalid move: " + ex.getMessage());
             }
         }
     }
@@ -548,27 +584,6 @@ public class GameController  implements IGameController {
         this.player = player;
     }
 
-
-    /**
-     * Same method as in PlacementController
-     * Gets the cell from the gridPane at a specific row and column.
-     */
-    @Override
-    public Node getCellPane(GridPane gridPane, int row, int col) {
-        for (Node node : gridPane.getChildren()) {
-            Integer rowIndex = GridPane.getRowIndex(node);
-            Integer colIndex = GridPane.getColumnIndex(node);
-
-            // default to 0 if null
-            int r = (rowIndex == null) ? 0 : rowIndex;
-            int c = (colIndex == null) ? 0 : colIndex;
-
-            if (r == row && c == col) {
-                return node;
-            }
-        }
-        return null; // not found
-    }
 
 
     /**
