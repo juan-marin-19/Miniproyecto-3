@@ -2,17 +2,24 @@ package com.example.miniproyecto_3.controller;
 
 import com.example.miniproyecto_3.model.Player;
 import com.example.miniproyecto_3.model.planeTextFiles.PlainTextFileHandler;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import com.example.miniproyecto_3.view.WelcomeStage;
 import com.example.miniproyecto_3.view.GameStage;
+import javafx.util.Duration;
+
 
 /**
  * Class made for handling events in the main welcome window of the game.
  */
-public class WelcomeController {
+public class WelcomeController implements IWelcomeController {
 
     private PlainTextFileHandler plainTextFileHandler;
+
+    @FXML
+    private Label messageLabel;
 
     @FXML
     private TextField nickname;
@@ -59,6 +66,13 @@ public class WelcomeController {
             }
         } else {
             System.out.println("The username is empty.");
+
+            messageLabel.setText("The username is empty.");
+            messageLabel.setVisible(true);
+
+            PauseTransition pausa = new PauseTransition(Duration.seconds(2));
+            pausa.setOnFinished(e -> messageLabel.setVisible(false));
+            pausa.play();
         }
     }
 
@@ -99,6 +113,12 @@ public class WelcomeController {
             }
         } else {
             System.out.println("no game available!!");
+            messageLabel.setText("no game available!!");
+            messageLabel.setVisible(true);
+
+            PauseTransition pausa = new PauseTransition(Duration.seconds(2));
+            pausa.setOnFinished(e -> messageLabel.setVisible(false));
+            pausa.play();
         }
     }
 

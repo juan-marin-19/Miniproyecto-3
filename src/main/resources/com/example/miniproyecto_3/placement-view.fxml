@@ -68,11 +68,15 @@
                             </font>
                         </Label>
                             <!-- Label de instrucciones -->
-                            <Label fx:id="instructionLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="506.0" layoutY="391.0" prefHeight="59.0" prefWidth="462.0" styleClass="label-instruccion" text="Press &quot;G&quot; to rotate a ship" textAlignment="CENTER">
+                            <Label fx:id="instructionLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="505.0" layoutY="404.0" prefHeight="59.0" prefWidth="462.0" styleClass="label-instruccion" text="Press &quot;G&quot; to rotate a ship" textAlignment="CENTER">
                                 <font>
                                     <Font size="15.0" />
                                 </font>
                             </Label>
+                  <Label fx:id="messageLabel" layoutX="530.0" layoutY="388.0" prefHeight="27.0" prefWidth="370.0" style="-fx-font-weight: bold;" styleClass="label-instruccion" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font size="20.0" />
+                     </font></Label>
                     </children>
                 </AnchorPane>
             </children>
@@ -84,7 +88,7 @@
                 <Pane prefHeight="64.0" prefWidth="965.0" HBox.hgrow="ALWAYS">
                     <children>
                         <!-- Botón "Listo para jugar" -->
-                        <Button fx:id="playButton" layoutX="652.0" layoutY="1.0" onAction="#handleClickContinue" styleClass="boton-jugar" text="READY TO PLAY" />
+                        <Button fx:id="playButton" layoutX="652.0" layoutY="5.0" onAction="#handleClickContinue" styleClass="boton-jugar" text="READY TO PLAY" />
                     </children>
                 </Pane>
             </children>
